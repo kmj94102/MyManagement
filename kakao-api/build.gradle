@@ -1,28 +1,20 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def kakao_key = "kakao${properties.getProperty('kakao_native_key')}"
-
 android {
-    namespace 'com.example.mymanagement'
+    namespace 'com.example.mymanagement.kakao_api'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.mymanagement"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
-        buildConfigField "String", "KAKAO_NATIVE_KEY", properties['kakao_native_key']
-        manifestPlaceholders = [KAKAO_NATIVE_KEY:kakao_key]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -42,12 +34,9 @@ android {
 
 dependencies {
 
-    implementation project(path: ':kakao-api')
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
