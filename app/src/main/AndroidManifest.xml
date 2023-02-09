@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:host="oauth"
-                    android:scheme="kakao522b626eff6065e3cc4750eed55fe921" />
+                    android:scheme="kakao${kakao_native_key}" />
             </intent-filter>
         </activity>
     </application>

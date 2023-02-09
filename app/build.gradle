@@ -3,11 +3,11 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def kakao_key = "kakao${properties.getProperty('kakao_native_key')}"
 
 android {
     namespace 'com.example.mymanagement'
@@ -21,7 +21,6 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "KAKAO_NATIVE_KEY", properties['kakao_native_key']
-        manifestPlaceholders = [KAKAO_NATIVE_KEY:kakao_key]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
