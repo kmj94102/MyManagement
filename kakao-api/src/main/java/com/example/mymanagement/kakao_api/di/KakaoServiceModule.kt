@@ -1,7 +1,7 @@
-package com.example.kakao_api.di
+package com.example.mymanagement.kakao_api.di
 
-import com.example.kakao_api.service.KakaoService
-import com.example.kakao_api.service.KakaoServiceImpl
+import com.example.mymanagement.kakao_api.service.KakaoLoginService
+import com.example.mymanagement.kakao_api.service.KakaoLoginLoginServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,8 +12,8 @@ import dagger.hilt.components.SingletonComponent
 interface KakaoServiceModule {
 
     @Binds
-    fun provideKakaoService(
-        kakaoServiceImpl: KakaoServiceImpl
-    ): KakaoService
+    fun provideKakaoLoginService(
+        kakaoLoginServiceImpl: KakaoLoginLoginServiceImpl
+    ): KakaoLoginService
 
 }

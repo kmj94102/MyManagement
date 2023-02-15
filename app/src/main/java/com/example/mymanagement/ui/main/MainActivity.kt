@@ -13,15 +13,19 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
-    lateinit var btnLogin: Button
-    lateinit var btnLogout: Button
-    lateinit var txtUserInfo: TextView
+    private lateinit var btnLogin: Button
+    private lateinit var btnLogout: Button
+    private lateinit var btnCalendar: Button
+    private lateinit var btnSetCalendar: Button
+    private lateinit var txtUserInfo: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         btnLogin = findViewById(R.id.btnLogin)
+        btnCalendar = findViewById(R.id.btnCalendar)
+        btnSetCalendar = findViewById(R.id.btnSetCalendar)
         btnLogout = findViewById(R.id.btnLogout)
         txtUserInfo = findViewById(R.id.txtLoginInfo)
 
@@ -31,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.loginWithKakaoAccount(
                 context = this,
                 successListener = {
-                    viewModel.getUserInfo()
+                    viewModel.getUserInfo(this)
                     checkLoggedIn()
                 },
                 failureListener = {
@@ -43,6 +47,14 @@ class MainActivity : AppCompatActivity() {
         btnLogout.setOnClickListener {
             viewModel.logout()
             checkLoggedIn()
+        }
+
+        btnCalendar.setOnClickListener {
+            viewModel.getSchedules()
+        }
+
+        btnSetCalendar.setOnClickListener {
+            viewModel.setSchedule()
         }
     }
 
