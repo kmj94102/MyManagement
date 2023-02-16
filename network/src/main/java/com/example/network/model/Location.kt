@@ -1,4 +1,4 @@
-package com.example.mymanagement.kakao_api.model
+package com.example.network.model
 
 /**
  * @param name 장소 이름(최대 100자) [일정 생성 시 필수]

@@ -1,4 +1,4 @@
-package com.example.mymanagement.kakao_api.model
+package com.example.network.model
 
 /**
  * @param start_at 일정 시작 시각, UTC*, RFC5545의 DATE-TIME 형식(예: 2022-05-17T12:00:00Z)

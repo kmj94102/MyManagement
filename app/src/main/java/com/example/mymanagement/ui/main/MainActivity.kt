@@ -50,11 +50,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnCalendar.setOnClickListener {
-            viewModel.getSchedules()
+            viewModel.getRouteList()
         }
 
         btnSetCalendar.setOnClickListener {
-            viewModel.setSchedule()
+            viewModel.getRealtimeStationArrivals()
         }
     }
 

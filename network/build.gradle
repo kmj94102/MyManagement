@@ -1,27 +1,26 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    namespace 'com.example.mymanagement'
+    namespace 'com.example.network'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.mymanagement"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
-        buildConfigField "String", "KAKAO_NATIVE_KEY", properties['kakao_native_key']
+        buildConfigField "String", "BUS_AUTH_KEY", properties['bus_auth_key']
+        buildConfigField "String", "SUBWAY_API_KEY", properties['subwy_api_key']
+        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -41,25 +40,23 @@ android {
 
 dependencies {
 
-    implementation project(path: ':kakao-api')
-    implementation project(path: ':network')
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    // 카카오 로그인
-    implementation "com.kakao.sdk:v2-user:2.12.1"
-
     // hilt
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
-}
 
-kapt {
-    correctErrorTypes = true
+    // retrofit - http://square.github.io/retrofit/ (Apache 2.0)
+    def retrofit_version = '2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    def okhttp3_version = '4.10.0'
+    // okhttp - https://github.com/square/okhttp (Apache 2.0)
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 }

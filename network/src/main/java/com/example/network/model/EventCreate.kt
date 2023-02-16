@@ -1,4 +1,4 @@
-package com.example.mymanagement.kakao_api.model
+package com.example.network.model
 
 /**
  * @param title 일정 제목(최대 50자) [필수]

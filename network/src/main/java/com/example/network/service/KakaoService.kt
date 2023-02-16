@@ -1,16 +1,9 @@
-package com.example.mymanagement.kakao_api.service
+package com.example.network.service
 
-import com.example.mymanagement.kakao_api.model.EventCreate
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Query
+import com.example.network.BuildConfig
+import retrofit2.http.*
 
 interface KakaoService {
-
     /**
      * 사용자 캘린더 목록 가져오기
      * @param token ACCESS TOKEN
@@ -39,12 +32,22 @@ interface KakaoService {
         @Query("from") from: String,
         @Query("to") to: String
     )
+
     @FormUrlEncoded
     @POST("/v2/api/calendar/create/event")
     suspend fun setSchedule(
         @Header("Authorization") token: String,
 //        @Field("calendar_id") calendar_id: String,
         @Field("event") event: String
+    )
+
+    /**
+     * 키워드로 장소 검색하기
+     * **/
+    @GET("https://dapi.kakao.com/v2/local/search/keyword.json")
+    suspend fun getPlaceListByKeyword(
+        @Header("Authorization") token: String = "KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}",
+        @Query("query") query: String = "서울역"
     )
 
 }

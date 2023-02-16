@@ -4,9 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mymanagement.kakao_api.model.EventCreate
-import com.example.mymanagement.kakao_api.model.Time
+import com.example.mymanagement.kakao_api.service.KakaoLoginClient
+import com.example.network.model.EventCreate
+import com.example.network.model.Time
 import com.example.mymanagement.kakao_api.service.KakaoLoginService
+import com.example.network.service.BusClient
+import com.example.network.service.KakaoClient
+import com.example.network.service.SubwayClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val client: KakaoLoginService
+    private val loginClient: KakaoLoginClient,
+    private val kakaoClient: KakaoClient,
+    private val busClient: BusClient,
+    private val subwayClient: SubwayClient
 ) : ViewModel() {
 
     var userInfo: User? = null
@@ -31,7 +38,7 @@ class MainViewModel @Inject constructor(
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
-        client.loginWithKakaoAccount(
+        loginClient.loginWithKakaoAccount(
             context = context,
             callback = { token: OAuthToken?, error ->
                 error?.printStackTrace()
@@ -45,33 +52,33 @@ class MainViewModel @Inject constructor(
     }
 
     fun getUserInfo(context: Context) {
-        client.getUserInfo(context = context) { user, throwable ->
+        loginClient.getUserInfo(context = context) { user, throwable ->
             userInfo = user
             throwable?.printStackTrace()
         }
     }
 
     fun logout() {
-        client.logout {
+        loginClient.logout {
             it?.printStackTrace()
             if (it == null) userInfo = null
         }
     }
 
     fun getCalendarList() = viewModelScope.launch {
-        client.getCalendarList("Bearer $accessToken")
+        kakaoClient.getCalendarList("Bearer $accessToken")
     }
 
     fun getHolidays() = viewModelScope.launch {
-        client.getHolidays()
+        kakaoClient.getHolidays()
     }
 
     fun getSchedules() = viewModelScope.launch {
-        client.getSchedules("Bearer $accessToken")
+        kakaoClient.getSchedules("Bearer $accessToken")
     }
 
     fun setSchedule() = viewModelScope.launch {
-        client.setSchedule(
+        kakaoClient.setSchedule(
             token = "Bearer $accessToken",
             calendarId = "primary",
             event = EventCreate(
@@ -82,6 +89,30 @@ class MainViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    fun getBusStopList() = viewModelScope.launch {
+        busClient.getBusStopList()
+    }
+
+    fun getRouteList() = viewModelScope.launch {
+        busClient.getTransitRouteList()
+    }
+
+    fun getEstimatedArrivalInfoList() = viewModelScope.launch {
+        busClient.getEstimatedArrivalInfoList()
+    }
+
+    fun getRouteEstimatedArrivalInfoList() = viewModelScope.launch {
+        busClient.getRouteEstimatedArrivalInfoList()
+    }
+
+    fun getPlaceListByKeyword() = viewModelScope.launch {
+        kakaoClient.getPlaceListByKeyword()
+    }
+
+    fun getRealtimeStationArrivals() = viewModelScope.launch {
+        subwayClient.getRealtimeStationArrivals()
     }
 
 }

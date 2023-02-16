@@ -5,7 +5,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.model.User
 import javax.inject.Inject
 
-class KakaoClient @Inject constructor(
+class KakaoLoginClient @Inject constructor(
     private val loginService: KakaoLoginService,
 ) {
 
