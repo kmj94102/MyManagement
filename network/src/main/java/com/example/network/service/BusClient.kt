@@ -6,41 +6,32 @@ class BusClient @Inject constructor(
     private val service: BusService
 ) {
 
-    suspend fun getBusStopList() = try {
-        service.getBusStopList(
-            latitude = 0.0,
-            longitude = 0.0
-        )
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    /** 버스 정류소 조회 **/
+    suspend fun fetchBusStopList(
+        latitude: Double,
+        longitude: Double
+    ) = service.fetchBusStopList(
+        latitude = latitude,
+        longitude = longitude
+    ).response.body.items.item
 
-    suspend fun getTransitRouteList() = try {
+    suspend fun getTransitRouteList() =
         service.getTransitRouteList(
             cityCode = 0,
             nodeId = ""
         )
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
 
-    suspend fun getEstimatedArrivalInfoList() = try {
+    suspend fun getEstimatedArrivalInfoList() =
         service.getEstimatedArrivalInfoList(
             cityCode = 0,
             nodeId = ""
         )
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
 
-    suspend fun getRouteEstimatedArrivalInfoList() = try {
+    suspend fun getRouteEstimatedArrivalInfoList() =
         service.getRouteEstimatedArrivalInfoList(
             cityCode = 0,
             nodeId = "",
             routeId = ""
         )
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
 
 }

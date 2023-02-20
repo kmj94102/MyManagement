@@ -1,6 +1,7 @@
 package com.example.mymanagement.ui.compose.ui.navigation
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import com.example.mymanagement.R
 
 interface NavItem {
@@ -12,7 +13,8 @@ interface NavItem {
 data class MainNavItem(
     override val title: String,
     override val route: String,
-    override val routeWithPostFix: String = route
+    override val routeWithPostFix: String = route,
+    val tailIcons: (@Composable () -> Unit)? = null,
 ) : NavItem
 
 data class BottomNavItem(
@@ -24,10 +26,16 @@ data class BottomNavItem(
 ) : NavItem
 
 sealed class NavScreen(val item: MainNavItem) {
-    object SearchSubwayScreen: NavScreen(
+    object SubwaySearch: NavScreen(
         MainNavItem(
             title = "지하철 검색",
             route = "SearchSubwayScreen"
+        )
+    )
+    object BusStationSearch: NavScreen(
+        MainNavItem(
+            title = "버스 정류소 검색",
+            route = "SearchBusStation"
         )
     )
 }

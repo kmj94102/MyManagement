@@ -18,7 +18,7 @@ interface BusService {
      * @param type 데이터 타입(xml, json)
      * ***/
     @GET("BusSttnInfoInqireService/getCrdntPrxmtSttnList")
-    suspend fun getBusStopList(
+    suspend fun fetchBusStopList(
         @Query("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
         @Query("gpsLati") latitude: Double,
         @Query("gpsLong") longitude: Double,

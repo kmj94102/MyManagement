@@ -8,6 +8,9 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def naver_map_client_id = properties.getProperty('client_id')
+def naver_map_client_secret = properties.getProperty('client_secret')
+def kakao_native_key = properties.getProperty('kakao_native_key')
 
 android {
     namespace 'com.example.mymanagement'
@@ -19,6 +22,11 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders= [
+                kakaoNativeKey: kakao_native_key,
+                naverClientId: naver_map_client_id,
+                naverClientSecret: naver_map_client_secret
+        ]
 
         buildConfigField "String", "KAKAO_NATIVE_KEY", properties['kakao_native_key']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -59,18 +67,17 @@ dependencies {
 
     implementation project(path: ':kakao-api')
     implementation project(path: ':network')
+
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    // data binding
-//    kapt 'com.android.databinding:compiler:3.1.4'
 
     // compose
     implementation 'androidx.compose.material:material:1.3.1'
@@ -80,6 +87,9 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation "com.google.accompanist:accompanist-permissions:0.28.0"
 
     // compose navigation
     def nav_version = "2.5.3"
@@ -89,8 +99,17 @@ dependencies {
     // 카카오 로그인
     implementation "com.kakao.sdk:v2-user:2.12.1"
 
+    // 네이버 지도 compose
+    implementation 'io.github.fornewid:naver-map-compose:1.3.1'
+
     // hilt
     implementation "com.google.dagger:hilt-android:2.44"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
+    // Lottie
+    def lottieVersion = "6.0.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
 
     kapt "com.google.dagger:hilt-compiler:2.44"
 }

@@ -20,25 +20,30 @@ fun BottomNavigationBar(
     onClick: (BottomNavItem) -> Unit
 ) {
     val items = BottomNavItems.values().map { it.item }
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val isVisible = items
+        .map{it.routeWithPostFix}
+        .contains(backStackEntry?.destination?.route)
 
-    BottomNavigation(
-        backgroundColor = White,
-        elevation = 6.dp
-    ) {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        items.forEach { item ->
-            BottomNavigationItem(
-                selected = item.routeWithPostFix == backStackEntry?.destination?.route,
-                onClick = { onClick(item) },
-                icon = {
-                    Icon(painter = painterResource(id = item.icon), contentDescription = item.title)
-                },
-                label = {
-                    Text(text = item.title)
-                },
-                selectedContentColor = Green,
-                unselectedContentColor = Gray,
-            )
+    if (isVisible) {
+        BottomNavigation(
+            backgroundColor = White,
+            elevation = 6.dp
+        ) {
+            items.forEach { item ->
+                BottomNavigationItem(
+                    selected = item.routeWithPostFix == backStackEntry?.destination?.route,
+                    onClick = { onClick(item) },
+                    icon = {
+                        Icon(painter = painterResource(id = item.icon), contentDescription = item.title)
+                    },
+                    label = {
+                        Text(text = item.title)
+                    },
+                    selectedContentColor = Green,
+                    unselectedContentColor = Gray,
+                )
+            }
         }
     }
 }

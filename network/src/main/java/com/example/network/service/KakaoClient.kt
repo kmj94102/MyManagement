@@ -1,6 +1,7 @@
 package com.example.network.service
 
 import com.example.network.model.EventCreate
+import com.example.network.model.PlaceResult
 import javax.inject.Inject
 
 class KakaoClient @Inject constructor(
@@ -54,9 +55,7 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    suspend fun getPlaceListByKeyword() = try {
-        kakaoService.getPlaceListByKeyword()
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    /** 키워드로 장소 검색 **/
+    suspend fun fetchPlaceListByKeyword(keyword: String) =
+        kakaoService.fetchPlaceListByKeyword(query = keyword)
 }

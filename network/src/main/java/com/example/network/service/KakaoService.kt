@@ -1,6 +1,7 @@
 package com.example.network.service
 
 import com.example.network.BuildConfig
+import com.example.network.model.PlaceResult
 import retrofit2.http.*
 
 interface KakaoService {
@@ -45,9 +46,9 @@ interface KakaoService {
      * 키워드로 장소 검색하기
      * **/
     @GET("https://dapi.kakao.com/v2/local/search/keyword.json")
-    suspend fun getPlaceListByKeyword(
+    suspend fun fetchPlaceListByKeyword(
         @Header("Authorization") token: String = "KakaoAK ${BuildConfig.KAKAO_REST_API_KEY}",
         @Query("query") query: String = "서울역"
-    )
+    ): PlaceResult
 
 }

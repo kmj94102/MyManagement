@@ -23,6 +23,6 @@ data class Place(
     val categoryGroupCode: String,
     @SerializedName("place_name")
     val placeName: String,
-    val x: Float,
-    val y: Float
+    val x: Double,
+    val y: Double
 )
