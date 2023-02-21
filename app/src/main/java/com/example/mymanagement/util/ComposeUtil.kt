@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mymanagement.ui.compose.ui.theme.Black
+import com.example.mymanagement.view.compose.ui.theme.Black
 
 fun textStyle12(): TextStyle = TextStyle(
     color = Black,
