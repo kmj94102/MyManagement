@@ -26,8 +26,6 @@ interface BusService {
         @Query("pageNo") pageNo: Int = 1,
         @Query("_type") type: String = "json",
     ): BusApiResult<List<BusStop>>
-    // 37.748362 127.044251
-    // 37.5547125 126.9707878
 
     /**
      * 정류소 별 경유 노선 목록 조회
@@ -39,7 +37,7 @@ interface BusService {
      * @param type 데이터 타입(xml, json)
      * **/
     @GET("BusSttnInfoInqireService/getSttnThrghRouteList")
-    suspend fun getTransitRouteList(
+    suspend fun fetchTransitRouteList(
         @Query("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
         @Query("cityCode") cityCode: Int,
         @Query("nodeid") nodeId: String,
@@ -52,7 +50,7 @@ interface BusService {
      * 정류소 별 도착 예정 정보 목록 조회
      * **/
     @GET("ArvlInfoInqireService/getSttnAcctoArvlPrearngeInfoList")
-    suspend fun getEstimatedArrivalInfoList(
+    suspend fun fetchEstimatedArrivalInfoList(
         @Query("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
         @Query("cityCode") cityCode: Int,
         @Query("nodeId") nodeId: String,
@@ -62,10 +60,10 @@ interface BusService {
     ): BusApiResult<List<EstimatedArrivalInfo>>
 
     /**
-     * 정류소 별 특정 노선 버스 도착 예정 정보 목록 조회
+     * 정류소의 특정 노선 버스 도착 예정 정보 목록 조회
      * **/
     @GET("ArvlInfoInqireService/getSttnAcctoSpcifyRouteBusArvlPrearngeInfoList")
-    suspend fun getRouteEstimatedArrivalInfoList(
+    suspend fun fetchRouteEstimatedArrivalInfoList(
         @Query("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
         @Query("cityCode") cityCode: Int,
         @Query("nodeId") nodeId: String,

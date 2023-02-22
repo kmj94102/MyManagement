@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 fun CommonNaverMap(
     cameraLatLng: LatLng,
     list: List<BusStop>,
-    cameraPositionState: CameraPositionState
+    cameraPositionState: CameraPositionState,
+    onMarkerClick: (Int, String, String) -> Unit
 ){
     val mapProperties by remember {
         mutableStateOf(
@@ -53,8 +54,8 @@ fun CommonNaverMap(
                     position = LatLng(it.latitude, it.longitude)
                 ),
                 captionText = it.nodeNm,
-                onClick = {
-
+                onClick = { _ ->
+                    onMarkerClick(it.cityCode, it.nodeId, it.nodeNm)
                     true
                 }
             )

@@ -1,6 +1,7 @@
 package com.example.mymanagement.view.compose.ui.navigation
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import com.example.mymanagement.R
 
@@ -25,6 +26,13 @@ data class BottomNavItem(
     val icon: Int
 ) : NavItem
 
+fun makeRouteWithArgs(route: String, vararg args: String): String = buildString {
+    append(route)
+    args.forEach {
+        append("/$it")
+    }
+}
+
 sealed class NavScreen(val item: MainNavItem) {
     object SubwaySearch: NavScreen(
         MainNavItem(
@@ -38,6 +46,18 @@ sealed class NavScreen(val item: MainNavItem) {
             route = "SearchBusStation"
         )
     )
+
+    object BusStopArrivalInfo: NavScreen(
+        MainNavItem(
+            title = "",
+            route = "BusStopArrivalInfo",
+            routeWithPostFix = "BusStopArrivalInfo/{cityCode}/{nodeId}/{name}",
+        )
+    ) {
+        const val CityCode = "cityCode"
+        const val NodeId = "nodeId"
+        const val Name = "name"
+    }
 }
 
 enum class BottomNavItems(val item: BottomNavItem) {

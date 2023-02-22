@@ -10,8 +10,8 @@ import com.google.gson.annotations.SerializedName
  * @param routeNo 노선 번호
  * @param routeType 노선 유형
  * @param arrPrevStationCnt 도착 예정 버스 남은 정류장 수
- * @param arrTime 도착예정버스 차량유형
- * @param vehicleType 도착 예정 버스 도착 예상 시간(초)
+ * @param arrTime 도착 예정 버스 도착 예상 시간(초)
+ * @param vehicleType 도착예정버스 차량유형
  * **/
 data class EstimatedArrivalInfo(
     @SerializedName("nodeid")
@@ -30,4 +30,13 @@ data class EstimatedArrivalInfo(
     val arrTime: Int,
     @SerializedName("vehicletp")
     val vehicleType: String
+)
+
+data class BusEstimatedArrivalInfo(
+    val busNumber: String,
+    val routeId: String,
+    val nodeId: String,
+    val nodeName: String,
+    val arrInfo: List<String>,
+    val isFavorite: Boolean
 )

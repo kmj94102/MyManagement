@@ -17,13 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mymanagement.R
-import com.example.mymanagement.view.compose.ui.custom.CommonButton
-import com.example.mymanagement.view.compose.ui.custom.CommonNaverMap
-import com.example.mymanagement.view.compose.ui.custom.CommonOutLineButton
-import com.example.mymanagement.view.compose.ui.custom.SearchTextField
-import com.example.mymanagement.view.compose.ui.theme.White
 import com.example.mymanagement.util.getSeoulLatLng
 import com.example.mymanagement.util.shadow
+import com.example.mymanagement.view.compose.ui.custom.*
+import com.example.mymanagement.view.compose.ui.navigation.NavScreen
+import com.example.mymanagement.view.compose.ui.theme.White
 import com.example.network.model.BusStop
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -37,6 +35,8 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BusStationSearchScreen(
+    goToArrivalInfo: (Int, String, String) -> Unit,
+    onBackClick: () -> Unit = {},
     viewModel: BusStationSearchViewModel = hiltViewModel()
 ) {
     val permission = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
@@ -50,15 +50,25 @@ fun BusStationSearchScreen(
         )
     }
 
-    // 네이버 지도
-    CommonNaverMap(
-        list = busStopList,
-        cameraLatLng = viewModel.cameraLatLng.value,
-        cameraPositionState = cameraPositionState
-    )
-
-    // 하단 검색 창
     Box(modifier = Modifier.fillMaxSize()) {
+        // 네이버 지도
+        CommonNaverMap(
+            list = busStopList,
+            cameraLatLng = viewModel.cameraLatLng.value,
+            cameraPositionState = cameraPositionState
+        ) { cityCode, nodeId, name ->
+            goToArrivalInfo(cityCode, nodeId, name)
+        }
+
+        // 해더
+        CommonHeader(
+            title = NavScreen.BusStationSearch.item.title,
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            onBackClick()
+        }
+
+        // 하단 검색 창
         Card(
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
             backgroundColor = White,
@@ -131,6 +141,7 @@ fun BusStationSearchScreen(
             }
         }
     }
+
 }
 
 /** 내 위치 조회 **/
@@ -140,10 +151,14 @@ private fun getDeviceLocation(
 ) {
     val fusedLocation = LocationServices.getFusedLocationProviderClient(context)
     try {
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             val locationResult = fusedLocation.lastLocation
             locationResult.addOnCompleteListener { task ->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
                     val lastKnowLocation = task.result
                     resultListener(
                         LatLng(lastKnowLocation.latitude, lastKnowLocation.longitude)
@@ -160,5 +175,5 @@ private fun getDeviceLocation(
 @Composable
 @Preview
 fun PreviewBusStationSearchScreen() {
-    BusStationSearchScreen()
+    BusStationSearchScreen({ _, _, _ -> })
 }

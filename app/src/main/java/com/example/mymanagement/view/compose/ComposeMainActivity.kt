@@ -46,17 +46,6 @@ fun MainScreen() {
 
     Scaffold(
         backgroundColor = White,
-        topBar = {
-            if (selectItem is MainNavItem) {
-                NavigationTopBar(
-                    title = selectItem.title,
-                    tailIcons = (selectItem as? NavScreen)?.item?.tailIcons,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-        },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,

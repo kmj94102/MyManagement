@@ -1,5 +1,7 @@
 package com.example.network.di
 
+import com.example.network.repository.BusRepository
+import com.example.network.repository.BusRepositoryImpl
 import com.example.network.repository.MapRepository
 import com.example.network.repository.MapRepositoryImpl
 import dagger.Binds
@@ -15,5 +17,10 @@ interface RepositoryModule {
     fun bindMapRepository(
         mapRepositoryImpl: MapRepositoryImpl
     ): MapRepository
+
+    @Binds
+    fun bindBusRepository(
+        busRepositoryImpl: BusRepositoryImpl
+    ): BusRepository
 
 }
