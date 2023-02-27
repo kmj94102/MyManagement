@@ -6,12 +6,18 @@ class SubwayClient @Inject constructor(
     private val service: SubwayService
 ) {
 
-    suspend fun getRealtimeStationArrivals() = try {
-        service.getRealtimeStationArrivals(
-            keyword = "서울"
-        )
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    suspend fun fetchRealtimeStationArrivals(
+        keyword: String
+    ) = service.fetchRealtimeStationArrivals(
+        keyword = keyword
+    ).realtimeArrivalList
+
+    suspend fun fetchSubwayStationList(
+        start: Int,
+        end: Int
+    ) = service.fetchSubwayStationList(
+        start = start,
+        end = end
+    ).info
 
 }

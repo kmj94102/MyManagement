@@ -105,7 +105,9 @@ fun NavigationGraph(
         composable(
             route = NavScreen.SubwaySearch.item.routeWithPostFix
         ) {
-            SubwaySearchScreen()
+            SubwaySearchScreen(
+                onBackClick = onBackClick
+            )
             changeListener(NavScreen.SubwaySearch.item)
         }
     }

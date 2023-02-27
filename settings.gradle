@@ -18,3 +18,4 @@ rootProject.name = "MyManagement"
 include ':app'
 include ':kakao-api'
 include ':network'
+include ':database'

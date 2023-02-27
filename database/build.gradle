@@ -5,20 +5,14 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 android {
-    namespace 'com.example.network'
+    namespace 'com.example.mymanagement.database'
     compileSdk 33
 
     defaultConfig {
         minSdk 24
         targetSdk 33
 
-        buildConfigField "String", "BUS_AUTH_KEY", properties['bus_auth_key']
-        buildConfigField "String", "SUBWAY_API_KEY", properties['subwy_api_key']
-        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -40,12 +34,9 @@ android {
 
 dependencies {
 
-    implementation project(path: ':database')
-
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.sqlite:sqlite-ktx:2.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -54,12 +45,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
 
-    // retrofit - http://square.github.io/retrofit/ (Apache 2.0)
-    def retrofit_version = '2.9.0'
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    def okhttp3_version = '4.10.0'
-    // okhttp - https://github.com/square/okhttp (Apache 2.0)
-    implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
+    // Room
+    def room_version = "2.5.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }
