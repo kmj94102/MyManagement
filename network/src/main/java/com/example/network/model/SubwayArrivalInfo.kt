@@ -35,3 +35,27 @@ data class SubwayArrivalInfo(
     @SerializedName("arvlMsg2")
     val arrInfo: String
 )
+
+/**
+ * @param subwayLineId 지하철 호선 아이디
+ * @param currentStationName 현재 역 이름
+ * @param prevStationName 이전 역 이름
+ * @param nextStationName 다음 역 이름
+ * @param arrItemList 지하철 도착 정보
+ * **/
+data class SubwayArrival(
+    val subwayLineId: String,
+    val currentStationName: String,
+    val prevStationName: String,
+    val nextStationName: String,
+    val arrItemList: List<SubwayArrivalItem>
+)
+
+/**
+ * @param arrInfo 도착 정보 : 00행 0000
+ * @param isUpLine 상행 또는 내선 여부
+ * **/
+data class SubwayArrivalItem(
+    val arrInfo: String,
+    val isUpLine: Boolean
+)

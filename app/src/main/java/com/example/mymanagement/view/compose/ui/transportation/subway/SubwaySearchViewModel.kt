@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymanagement.database.entity.StationItem
+import com.example.network.model.SubwayArrival
 import com.example.network.repository.SubwayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,13 +66,8 @@ class SubwaySearchViewModel @Inject constructor(
 //        }
         .catch { it.printStackTrace() }
 
-    private val arrivalInfoSharedFlow = MutableSharedFlow<String>(replay = 1)
-    val arrivalInfoMap = arrivalInfoSharedFlow.flatMapLatest {
-        repository
-            .fetchRealtimeStationArrivals(it)
-    }.onStart { _isProgress.value = true }
-        .onCompletion { _isProgress.value = false }
-        .catch { it.printStackTrace() }
+    private val _arrivalInfoMap = MutableStateFlow<List<SubwayArrival>>(listOf())
+    val arrivalInfoMap: Flow<List<SubwayArrival>> = _arrivalInfoMap
 
     init {
         searchStations()
@@ -111,8 +107,17 @@ class SubwaySearchViewModel @Inject constructor(
     /** 지하철 도착 정보 조회 **/
     fun fetchRealtimeStationArrivals(
         stationName: String
-    ) = viewModelScope.launch {
-        arrivalInfoSharedFlow.tryEmit(stationName)
+    )  {
+        repository
+            .fetchRealtimeStationArrivals(stationName)
+            .onStart { _isProgress.value = true }
+            .onEach { _arrivalInfoMap.value = it }
+            .onCompletion { _isProgress.value = false }
+            .catch {
+                _arrivalInfoMap.value = emptyList()
+                it.printStackTrace()
+            }
+            .launchIn(viewModelScope)
     }
 
 }

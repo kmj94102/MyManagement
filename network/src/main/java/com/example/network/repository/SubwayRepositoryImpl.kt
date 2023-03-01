@@ -6,7 +6,9 @@ import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.mymanagement.database.entity.StationEntity
 import com.example.mymanagement.database.entity.StationItem
 import com.example.network.R
+import com.example.network.model.SubwayArrival
 import com.example.network.model.SubwayArrivalInfo
+import com.example.network.model.SubwayArrivalItem
 import com.example.network.service.SubwayClient
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -69,16 +71,40 @@ class SubwayRepositoryImpl @Inject constructor(
         e.printStackTrace()
     }
 
-    override suspend fun fetchRealtimeStationArrivals(
+    override fun fetchRealtimeStationArrivals(
         keyword: String
     ) = flow {
-        val result = client
-            .fetchRealtimeStationArrivals(keyword)
-            .sortedWith(
-                compareBy<SubwayArrivalInfo> { it.updnLine }.thenBy { it.arrTime }
-            )
-            .groupBy { it.subwayLineId }
-        emit(result)
+        val items = mutableListOf<SubwayArrival>()
+        val result = client.fetchRealtimeStationArrivals(keyword)
+
+        if (result.isEmpty()) throw NoSuchElementException("데이터가 없습니다.")
+
+        val currentStation = result[0].stationName
+
+        items.addAll(
+            result
+                .groupBy { it.subwayLineId }
+                .map { (subwayLineId, subwayArrivalInfoList) ->
+                    val prevStation =
+                        subwayDao.fetchSubwayName(subwayArrivalInfoList[0].nextStationId)
+                    val nextStation =
+                        subwayDao.fetchSubwayName(subwayArrivalInfoList[0].prevStationId)
+                    SubwayArrival(
+                        subwayLineId = subwayLineId,
+                        prevStationName = prevStation,
+                        nextStationName = nextStation,
+                        currentStationName = currentStation,
+                        arrItemList = subwayArrivalInfoList
+                            .map {
+                                SubwayArrivalItem(
+                                    arrInfo = "${it.destinationName}행 ${it.arrInfo}",
+                                    isUpLine = it.updnLine == "상행" || it.updnLine == "외선"
+                                )
+                            }
+                    )
+                }
+        )
+        emit(items.sortedBy { it.subwayLineId })
     }
 
 }

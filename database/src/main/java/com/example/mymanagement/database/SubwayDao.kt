@@ -69,4 +69,7 @@ interface SubwayDao {
         }
     }
 
+    @Query("SELECT stationName FROM StationEntity WHERE stationCode = :stationId")
+    suspend fun fetchSubwayName(stationId: String): String
+
 }

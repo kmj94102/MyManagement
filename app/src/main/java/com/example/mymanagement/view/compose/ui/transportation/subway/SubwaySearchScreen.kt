@@ -42,10 +42,7 @@ fun SubwaySearchScreen(
     val scope = rememberCoroutineScope()
 
     val stations = viewModel.stationItems.collectAsState(initial = emptyList()).value
-    val arrivalInfoList = viewModel.arrivalInfoMap.collectAsState(initial = mapOf()).value
-    val stationName = remember {
-        mutableStateOf("")
-    }
+    val arrivalInfoList = viewModel.arrivalInfoMap.collectAsState(initial = listOf()).value
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
@@ -53,17 +50,23 @@ fun SubwaySearchScreen(
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         sheetContent = {
             ArrivalInfoContainer(
-                infoMap = arrivalInfoList,
-                stationName = stationName.value,
+                list = arrivalInfoList,
+                onHide = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 13.dp, bottom = 23.dp, start = 20.dp, end = 20.dp)
             )
         },
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(White)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(White)
+        ) {
             // 해더 영역
             CommonHeader(
                 title = NavScreen.SubwaySearch.item.title,
@@ -79,7 +82,6 @@ fun SubwaySearchScreen(
                     .fillMaxWidth()
                     .weight(1f),
                 onStationClick = {
-                    stationName.value = it
                     viewModel.fetchRealtimeStationArrivals(it)
                     scope.launch {
                         sheetState.show()
