@@ -15,26 +15,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mymanagement.R
+import com.example.mymanagement.database.entity.Favorite
+import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.mymanagement.view.compose.ui.custom.CommonLottie
-import com.example.mymanagement.view.compose.ui.theme.Black
-import com.example.mymanagement.view.compose.ui.theme.Blue
-import com.example.mymanagement.view.compose.ui.theme.Orange
-import com.example.mymanagement.view.compose.ui.theme.White
 import com.example.mymanagement.util.textStyle12
+import com.example.mymanagement.util.textStyle16
 import com.example.mymanagement.util.textStyle16B
 import com.example.mymanagement.util.textStyle24B
+import com.example.mymanagement.view.compose.ui.theme.*
 
 /** 교통 화면 **/
 @Composable
 fun TransportationScreen(
     goToSearchSubway: () -> Unit,
-    goToSearchBusStation: () -> Unit
+    goToSearchBusStation: () -> Unit,
+    viewModel: TransportationViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
@@ -46,7 +54,10 @@ fun TransportationScreen(
             goToSearchBusStation = goToSearchBusStation,
             modifier = Modifier
         )
-        TransportationBody(modifier = Modifier)
+        TransportationBody(
+            list = viewModel.favoriteList,
+            modifier = Modifier
+        )
     }
 }
 
@@ -136,7 +147,8 @@ fun TransportationSelectButton(
 /** 교통 화면 바디 **/
 @Composable
 fun TransportationBody(
-    modifier: Modifier
+    list: List<Favorite>,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -158,40 +170,36 @@ fun TransportationBody(
             )
         } // Row
 
-        // 수정 예정
-        CommonLottie(
-            rawRes = R.raw.empty
-        )
-
-        LazyColumn(
-            contentPadding = PaddingValues(top = 8.dp, bottom = 20.dp),
-            modifier = Modifier.padding(top = 10.dp)
-        ) {
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    TransportationFavorite(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(text = "1234\n5678", style = textStyle16B())
-                    }
-                    Spacer(modifier = Modifier.width(20.dp))
-                    TransportationFavorite(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(text = "1234", style = textStyle16B())
-                        Text(text = "(1234567890))", style = textStyle12())
-                    }
-                }
+        if (list.isEmpty()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+            ) {
+                CommonLottie(
+                    rawRes = R.raw.empty,
+                )
+                Text(
+                    text = "즐겨찾기를 추가해주세요",
+                    style = textStyle12().copy(color = Gray)
+                )
             }
-        } // LazyColumn
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(top = 8.dp, bottom = 20.dp),
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
+                item {
+                }
+            } // LazyColumn
+        }
     } // Column
 }
 
 /** 교통 즐겨찾기 아이템 **/
 @Composable
 fun TransportationFavorite(
-    modifier: Modifier,
-    content: @Composable ColumnScope.() -> Unit,
+    favorite: Favorite,
+    modifier: Modifier
 ) {
     Card(
         shape = RoundedCornerShape(6.dp),
@@ -210,19 +218,20 @@ fun TransportationFavorite(
                     }
                     .background(Blue)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_star),
-                    contentDescription = "favorite",
+                Icon(
+                    painter = painterResource(id = getFavoriteIconRes(favorite.type)),
+                    contentDescription = null,
+                    tint = White,
                     modifier = Modifier
-                        .padding(start = 10.dp)
-                        .padding(vertical = 4.dp)
-                        .size(12.dp)
+                        .padding(start = 7.dp, top = 4.dp, bottom = 4.dp)
+                        .size(24.dp)
                 )
+
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "10:00 - 12:00",
+                    text = favorite.time,
                     style = textStyle12(),
-                    modifier = Modifier.padding(end = 10.dp)
+                    modifier = Modifier.padding(end = 7.dp)
                 )
             } // Row
 
@@ -260,19 +269,8 @@ fun TransportationFavorite(
                 )
             } // Canvas
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_bus),
-                contentDescription = "bus",
-                modifier = Modifier
-                    .size(40.dp)
-                    .constrainAs(icon) {
-                        top.linkTo(head.bottom, 7.dp)
-                        bottom.linkTo(parent.bottom, 7.dp)
-                        start.linkTo(parent.start, 10.dp)
-                    }
-            )
-
             Column(
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier.constrainAs(contents) {
                     start.linkTo(icon.end, 10.dp)
                     top.linkTo(head.bottom)
@@ -281,10 +279,104 @@ fun TransportationFavorite(
                     width = Dimension.fillToConstraints
                 }
             ) {
-                content()
+                FavoriteContents(
+                    type = favorite.type,
+                    text = favorite.name
+                )
             }
         } // ConstraintLayout
     } // Card
+}
+
+fun getFavoriteIconRes(type: String) = when (type) {
+    FavoriteEntity.TypeSubway, FavoriteEntity.TypeSubwayDestination -> R.drawable.ic_subway
+    FavoriteEntity.TypeBusStop -> R.drawable.ic_busstop
+    else -> R.drawable.ic_bus
+}
+
+@Composable
+fun FavoriteContents(
+    type: String,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    when (type) {
+        FavoriteEntity.TypeSubway, FavoriteEntity.TypeBusStop -> {
+            Text(
+                text = text,
+                style = textStyle16B(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            )
+        }
+        FavoriteEntity.TypeSubwayDestination -> {
+            val infoList = text.split(FavoriteEntity.Separator)
+            if (infoList.size != 2) {
+                Text(
+                    text = text,
+                    style = textStyle16B(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+            } else {
+                val spanStyle = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = spanStyle) {
+                            append("출발")
+                        }
+                        append("  ${infoList[0]}\n")
+                        withStyle(style = spanStyle) {
+                            append("도착")
+                        }
+                        append("  ${infoList[1]}")
+                    },
+                    style = textStyle16B(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+            }
+        }
+        else -> {
+            val infoList = text.split(FavoriteEntity.Separator)
+            if (infoList.size != 2) {
+                Text(
+                    text = text,
+                    style = textStyle16B(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+            } else {
+                val spanStyle = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
+                Text(
+                    buildAnnotatedString {
+                        append(infoList[0].plus("\n"))
+                        withStyle(style = spanStyle) {
+                            append(infoList[1])
+                        }
+                    },
+                    style = textStyle16B(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+            }
+        }
+    }
 }
 
 @Preview

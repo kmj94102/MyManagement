@@ -1,6 +1,7 @@
 package com.example.network.repository
 
 import android.content.Context
+import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.SubwayDao
 import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.mymanagement.database.entity.StationEntity
@@ -19,6 +20,7 @@ import javax.inject.Inject
 
 class SubwayRepositoryImpl @Inject constructor(
     private val subwayDao: SubwayDao,
+    private val favoriteDao: FavoriteDao,
     private val client: SubwayClient,
     @ApplicationContext
     private val context: Context
@@ -62,7 +64,7 @@ class SubwayRepositoryImpl @Inject constructor(
     override suspend fun updateFavorite(
         item: StationItem
     ) = try {
-        subwayDao.favoriteInsertOrDelete(
+        favoriteDao.favoriteInsertOrDelete(
             type = FavoriteEntity.TypeSubway,
             id = item.stationCode,
             name = item.stationName

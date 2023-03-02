@@ -14,13 +14,27 @@ data class FavoriteEntity(
     val startTime: String,
     val endTime: String,
     val name: String,
-    val id: String
+    val id: String,
+    val timeStamp: Long
 ) {
+    fun mapper(): Favorite = Favorite(
+        type = type,
+        time = "$startTime - $endTime",
+        name = name,
+        id = id
+    )
     companion object {
         const val TypeBus = "Bus"
         const val TypeBusStop = "BusStop"
         const val TypeSubway = "Subway"
         const val TypeSubwayDestination = "SubwayDestination"
-        const val Separator = "||"
+        const val Separator = "|||"
     }
 }
+
+data class Favorite(
+    val type: String,
+    val time: String,
+    val name: String,
+    val id: String
+)

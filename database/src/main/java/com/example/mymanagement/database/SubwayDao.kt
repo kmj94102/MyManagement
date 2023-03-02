@@ -6,6 +6,7 @@ import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.mymanagement.database.entity.StationEntity
 import com.example.mymanagement.database.entity.StationItem
 import kotlinx.coroutines.flow.Flow
+import java.util.Calendar
 
 @Dao
 interface SubwayDao {
@@ -37,37 +38,6 @@ interface SubwayDao {
 
     @Query("SELECT lineNum FROM StationEntity GROUP BY lineNum")
     suspend fun fetchStationLineNumbers(): List<String>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavorite(favoriteEntity: FavoriteEntity)
-
-    @Query("DELETE FROM FavoriteEntity WHERE id = :id")
-    suspend fun deleteFavorite(id: String)
-
-    @Query("SELECT COUNT(*) FROM FavoriteEntity WHERE id = :id")
-    suspend fun fetchFavoriteById(id: String): Int
-
-    @Transaction
-    suspend fun favoriteInsertOrDelete(
-        type: String,
-        id: String,
-        name: String
-    ) {
-        if (fetchFavoriteById(id) > 0){
-            deleteFavorite(id)
-        } else {
-            insertFavorite(
-                FavoriteEntity(
-                    index = 0,
-                    type = type,
-                    startTime = "",
-                    endTime = "",
-                    name = name,
-                    id = id
-                )
-            )
-        }
-    }
 
     @Query("SELECT stationName FROM StationEntity WHERE stationCode = :stationId")
     suspend fun fetchSubwayName(stationId: String): String

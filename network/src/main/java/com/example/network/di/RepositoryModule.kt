@@ -25,4 +25,9 @@ interface RepositoryModule {
         subwayRepositoryImpl: SubwayRepositoryImpl
     ): SubwayRepository
 
+    @Binds
+    fun bindTransportationRepository(
+        transportationRepositoryImpl: TransportationRepositoryImpl
+    ): TransportationRepository
+
 }
