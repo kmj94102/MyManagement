@@ -33,6 +33,12 @@ class SubwaySearchViewModel @Inject constructor(
     private val _lineNumbersMap = mutableStateMapOf<String, Boolean>()
     val lineNumbersMap: Map<String, Boolean> = _lineNumbersMap
 
+    private val _departure = mutableStateOf<StationItem?>(null)
+    val departure: State<StationItem?> = _departure
+
+    private val _arrival = mutableStateOf<StationItem?>(null)
+    val arrival: State<StationItem?> = _arrival
+
     private val stationItemsSharedFlow = MutableSharedFlow<String>(replay = 1)
     val stationItems = stationItemsSharedFlow.flatMapLatest {
         repository.fetchStationItems(
@@ -118,6 +124,26 @@ class SubwaySearchViewModel @Inject constructor(
                 it.printStackTrace()
             }
             .launchIn(viewModelScope)
+    }
+
+    fun swapDepartureAndArrival() {
+        val temp = Pair(_arrival.value, _departure.value)
+        _arrival.value = temp.second
+        _departure.value = temp.first
+    }
+
+    fun setDeparture(departure: StationItem) {
+        _departure.value = departure
+        if (_arrival.value == departure) {
+            _arrival.value = null
+        }
+    }
+
+    fun setArrival(arrival: StationItem) {
+        _arrival.value = arrival
+        if (_departure.value == arrival) {
+            _arrival.value = null
+        }
     }
 
 }

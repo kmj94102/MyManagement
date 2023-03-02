@@ -189,6 +189,12 @@ fun TransportationBody(
                 modifier = Modifier.padding(top = 10.dp)
             ) {
                 item {
+                    list.forEach {
+                        TransportationFavorite(
+                            favorite = it,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             } // LazyColumn
         }
@@ -199,12 +205,12 @@ fun TransportationBody(
 @Composable
 fun TransportationFavorite(
     favorite: Favorite,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Card(
         shape = RoundedCornerShape(6.dp),
         border = BorderStroke(1.dp, Black),
-        modifier = modifier
+        modifier = modifier.height(87.dp)
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (head, leftHall, rightHall, icon, contents) = createRefs()
@@ -229,8 +235,8 @@ fun TransportationFavorite(
 
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = favorite.time,
-                    style = textStyle12(),
+                    text = if (favorite.time.trim() != "-") favorite.time else "",
+                    style = textStyle12().copy(White),
                     modifier = Modifier.padding(end = 7.dp)
                 )
             } // Row
@@ -272,7 +278,7 @@ fun TransportationFavorite(
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.constrainAs(contents) {
-                    start.linkTo(icon.end, 10.dp)
+                    start.linkTo(parent.start, 10.dp)
                     top.linkTo(head.bottom)
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end, 10.dp)
@@ -281,7 +287,7 @@ fun TransportationFavorite(
             ) {
                 FavoriteContents(
                     type = favorite.type,
-                    text = favorite.name
+                    text = favorite.name,
                 )
             }
         } // ConstraintLayout
@@ -309,7 +315,6 @@ fun FavoriteContents(
                 overflow = TextOverflow.Ellipsis,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
             )
         }
         FavoriteEntity.TypeSubwayDestination -> {
@@ -322,7 +327,6 @@ fun FavoriteContents(
                     overflow = TextOverflow.Ellipsis,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
                 )
             } else {
                 val spanStyle = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
@@ -342,7 +346,6 @@ fun FavoriteContents(
                     overflow = TextOverflow.Ellipsis,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
                 )
             }
         }
@@ -356,7 +359,6 @@ fun FavoriteContents(
                     overflow = TextOverflow.Ellipsis,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
                 )
             } else {
                 val spanStyle = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
@@ -372,7 +374,6 @@ fun FavoriteContents(
                     overflow = TextOverflow.Ellipsis,
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
                 )
             }
         }
