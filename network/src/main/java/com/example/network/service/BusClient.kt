@@ -57,4 +57,15 @@ class BusClient @Inject constructor(
         routeId = routeId
     )
 
+    /** 노선별 경유 정류소 목록 조회 **/
+    suspend fun fetchBusStopRouteList(
+        cityCode: Int,
+        routeId: String,
+        pageNo: Int,
+    ) = service.fetchBusStopRouteList(
+        pageNo = pageNo,
+        cityCode = cityCode,
+        routeId = routeId
+    ).response.body
+
 }

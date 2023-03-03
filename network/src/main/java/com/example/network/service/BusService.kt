@@ -4,6 +4,7 @@ import com.example.network.BuildConfig
 import com.example.network.model.BusApiResult
 import com.example.network.model.BusStop
 import com.example.network.model.EstimatedArrivalInfo
+import com.example.network.model.BusStopRoute
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -72,5 +73,16 @@ interface BusService {
         @Query("numOfRows") numOfRows: Int = 10,
         @Query("_type") type: String = "json"
     ): BusApiResult<List<EstimatedArrivalInfo>>
+
+    /** 노선별 경유 정류소 목록 조회 **/
+    @GET("BusRouteInfoInqireService/getRouteAcctoThrghSttnList")
+    suspend fun fetchBusStopRouteList(
+        @Query("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
+        @Query("pageNo") pageNo: Int = 1,
+        @Query("numOfRows") numOfRows: Int = 20,
+        @Query("_type") type: String = "json",
+        @Query("cityCode") cityCode: Int,
+        @Query("routeId") routeId: String
+    ): BusApiResult<List<BusStopRoute>>
 
 }

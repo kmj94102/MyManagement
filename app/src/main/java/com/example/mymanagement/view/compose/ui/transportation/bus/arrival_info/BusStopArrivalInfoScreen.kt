@@ -40,6 +40,7 @@ import com.example.network.model.EstimatedArrivalInfo
 fun BusStopArrivalInfoScreen(
     name: String,
     onBackClick: () -> Unit = {},
+    onRouteClick: (Int, String, String, String) -> Unit,
     viewModel: BusStopArrivalInfoViewModel = hiltViewModel()
 ) {
     val arrivalInfoList = viewModel.arrivalInfoList.collectAsState(initial = emptyList()).value
@@ -91,7 +92,12 @@ fun BusStopArrivalInfoScreen(
                     .weight(1f)
                     .padding(top = 25.dp, bottom = 23.dp, start = 20.dp, end = 20.dp)
             ) {
-                BigBusStopArrivalInfoContainer(arrivalInfoList[0])
+                BigBusStopArrivalInfoContainer(
+                    arrivalInfoList[0],
+                    onRouteClick = {
+                        onRouteClick(viewModel.cityCode.value, it.routeId, it.busNumber, it.nodeId)
+                    }
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 CommonButton(
                     text = "노선 보기",
@@ -117,6 +123,9 @@ fun BusStopArrivalInfoScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onFavoriteClick = { info ->
                             viewModel.toggleBusFavoriteStatus(info)
+                        },
+                        onRouteClick = { item ->
+                            onRouteClick(viewModel.cityCode.value, item.routeId, item.busNumber, item.nodeId)
                         }
                     )
                 }
@@ -130,7 +139,8 @@ fun BusStopArrivalInfoScreen(
 fun SmallBusStopArrivalInfoContainer(
     info: BusEstimatedArrivalInfo,
     modifier: Modifier = Modifier,
-    onFavoriteClick: (BusEstimatedArrivalInfo) -> Unit
+    onFavoriteClick: (BusEstimatedArrivalInfo) -> Unit,
+    onRouteClick: (BusEstimatedArrivalInfo) -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -151,7 +161,10 @@ fun SmallBusStopArrivalInfoContainer(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_route),
                     contentDescription = "",
-                    tint = White
+                    tint = White,
+                    modifier = Modifier.nonRippleClickable {
+                        onRouteClick(info)
+                    }
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
@@ -192,6 +205,7 @@ fun SmallBusStopArrivalInfoContainer(
 @Composable
 fun BigBusStopArrivalInfoContainer(
     info: BusEstimatedArrivalInfo,
+    onRouteClick: (BusEstimatedArrivalInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -201,7 +215,19 @@ fun BigBusStopArrivalInfoContainer(
         modifier = modifier
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-            val (busNumber, favorite, lottie, lottieBg, arrInfo) = createRefs()
+            val (busNumber, favorite, lottie, lottieBg, arrInfo, route) = createRefs()
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_route),
+                contentDescription = "",
+                tint = White,
+                modifier = Modifier
+                    .constrainAs(route) {
+                        centerVerticallyTo(busNumber)
+                        start.linkTo(parent.start, 20.dp)
+                    }
+                    .nonRippleClickable { onRouteClick(info) }
+            )
 
             Text(
                 text = info.busNumber,
@@ -213,7 +239,7 @@ fun BigBusStopArrivalInfoContainer(
             )
 
             Image(
-                painter = painterResource(id = R.drawable.ic_star),
+                painter = painterResource(id = if (info.isFavorite) R.drawable.ic_star else R.drawable.ic_star_empty),
                 contentDescription = null,
                 modifier = Modifier.constrainAs(favorite) {
                     centerVerticallyTo(busNumber)
@@ -269,6 +295,7 @@ fun BigBusStopArrivalInfoContainer(
 @Preview
 fun PreviewBusStopArrivalInfoScreen() {
     BusStopArrivalInfoScreen(
-        name = "테스트 정류소"
+        name = "테스트 정류소",
+        onRouteClick = { _, _, _, _-> }
     )
 }

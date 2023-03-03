@@ -1,6 +1,5 @@
 package com.example.mymanagement.view.compose.ui.transportation.bus.arrival_info
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -22,7 +21,8 @@ class BusStopArrivalInfoViewModel @Inject constructor(
     private val repository: BusRepository
 ) : ViewModel() {
 
-    private var cityCode: Int = 0
+    private var _cityCode = mutableStateOf(0)
+    val cityCode: State<Int> = _cityCode
     private lateinit var nodeId: String
 
     private val _isProgress = mutableStateOf(false)
@@ -34,7 +34,7 @@ class BusStopArrivalInfoViewModel @Inject constructor(
     private val sharedFlow = MutableSharedFlow<Unit>(replay = 1)
     val arrivalInfoList = sharedFlow.flatMapLatest {
         repository.fetchEstimatedArrivalInfoList(
-            cityCode = cityCode,
+            cityCode = _cityCode.value,
             nodeId = nodeId,
             onComplete = { _isProgress.value = false },
             onError = {}
@@ -43,7 +43,7 @@ class BusStopArrivalInfoViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Int>(NavScreen.BusStopArrivalInfo.CityCode)?.let {
-            cityCode = it
+            _cityCode.value = it
         }
         savedStateHandle.get<String>(NavScreen.BusStopArrivalInfo.NodeId)?.let {
             nodeId = it

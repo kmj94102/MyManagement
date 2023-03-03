@@ -18,18 +18,18 @@ data class BusApiResultHeader(
     val resultMsg: String
 )
 
-data class BusApiResultBody <T> (
-    val items: BusApiResultItem<T>
-)
-
 /**
  * @param numOfRows 한 페이지 결과 수
  * @param pageNo 페이지 수
  * @param totalCount 데이터 총 개수
  * **/
-data class BusApiResultItem <T> (
-    val item: T,
+data class BusApiResultBody <T> (
+    val items: BusApiResultItem<T>,
     val numOfRows: Int,
     val pageNo: Int,
     val totalCount: Int,
+)
+
+data class BusApiResultItem <T> (
+    val item: T
 )

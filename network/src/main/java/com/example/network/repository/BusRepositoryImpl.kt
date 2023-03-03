@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.network.model.BusEstimatedArrivalInfo
+import com.example.network.model.BusStopRoute
+import com.example.network.model.BusStopRouteItem
 import com.example.network.service.BusClient
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -77,6 +79,46 @@ class BusRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun fetchBusStopRouteList(
+        cityCode: Int,
+        routeId: String
+    ) = flow {
+        val list = mutableListOf<BusStopRoute>()
+        val numberOfRow = 20
+        var pageNumber = 1
+        var totalCount: Int? = null
+
+        try {
+            while (totalCount == null || (pageNumber - 1) * numberOfRow < totalCount) {
+                val result = client.fetchBusStopRouteList(
+                    cityCode = cityCode,
+                    routeId = routeId,
+                    pageNo = pageNumber
+                )
+                list.addAll(result.items.item)
+                totalCount = result.totalCount
+                pageNumber++
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        emit(
+            list.map {
+                BusStopRouteItem(
+                    nodeId = it.nodeId,
+                    nodeName = it.nodeName,
+                    nodeNumber = it.nodeNumber,
+                    routeId = it.routeId,
+                    upDownCode = it.upDownCode,
+                    isStartNode = it.index == 1,
+                    isEndNode = it.index == totalCount,
+                    isFavorite = favoriteDao.fetchFavoriteCountById(
+                        "${it.nodeId}${FavoriteEntity.Separator}${it.routeId}"
+                    ) > 0
+                )
+            }
+        )
+    }
 }
 
 private fun minSecFormat(originSec: Int): String {

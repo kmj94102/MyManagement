@@ -1,6 +1,7 @@
 package com.example.network.repository
 
 import com.example.network.model.BusEstimatedArrivalInfo
+import com.example.network.model.BusStopRouteItem
 import kotlinx.coroutines.flow.Flow
 
 interface BusRepository {
@@ -25,5 +26,8 @@ interface BusRepository {
 
     /** 버스 즐겨찾기 등록 **/
     suspend fun toggleBusFavoriteStatus(info: BusEstimatedArrivalInfo)
+
+    /** 노선별 경유 정류소 목록 조회 **/
+    fun fetchBusStopRouteList(cityCode: Int, routeId: String): Flow<List<BusStopRouteItem>>
 
 }

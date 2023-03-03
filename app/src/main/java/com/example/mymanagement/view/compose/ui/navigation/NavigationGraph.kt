@@ -13,6 +13,7 @@ import com.example.mymanagement.view.compose.ui.schedule.ScheduleScreen
 import com.example.mymanagement.view.compose.ui.transportation.TransportationScreen
 import com.example.mymanagement.view.compose.ui.transportation.bus.BusStationSearchScreen
 import com.example.mymanagement.view.compose.ui.transportation.bus.arrival_info.BusStopArrivalInfoScreen
+import com.example.mymanagement.view.compose.ui.transportation.bus.route.BusStopRouteScreen
 import com.example.mymanagement.view.compose.ui.transportation.subway.SubwaySearchScreen
 
 @Composable
@@ -97,9 +98,43 @@ fun NavigationGraph(
 
             BusStopArrivalInfoScreen(
                 name = name,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onRouteClick = { cityCode, routeId, number, nodeId ->
+                    navController.navigate(
+                        makeRouteWithArgs(
+                            route = NavScreen.BusStopRoute.item.route,
+                            "$cityCode",
+                            routeId,
+                            number,
+                            nodeId
+                        )
+                    )
+                }
             )
 
+        }
+        /** 버스 노선 화면 **/
+        composable(
+            route = NavScreen.BusStopRoute.item.routeWithPostFix,
+            arguments = listOf(
+                navArgument(NavScreen.BusStopRoute.CityCode) { type = NavType.IntType },
+                navArgument(NavScreen.BusStopRoute.RouteId) { type = NavType.StringType },
+                navArgument(NavScreen.BusStopRoute.Number) { type = NavType.StringType },
+                navArgument(NavScreen.BusStopRoute.NodeId) { type = NavType.StringType },
+            )
+        ) { entry ->
+            entry.arguments?.getInt(NavScreen.BusStopRoute.CityCode) ?: return@composable
+            entry.arguments?.getString(NavScreen.BusStopRoute.RouteId) ?: return@composable
+            val number =
+                entry.arguments?.getString(NavScreen.BusStopRoute.Number) ?: return@composable
+            val nodeId =
+                entry.arguments?.getString(NavScreen.BusStopRoute.NodeId) ?: return@composable
+
+            BusStopRouteScreen(
+                number = number,
+                nodeId = nodeId,
+                onBackClick = onBackClick
+            )
         }
         /** 지하철 검색 화면 **/
         composable(

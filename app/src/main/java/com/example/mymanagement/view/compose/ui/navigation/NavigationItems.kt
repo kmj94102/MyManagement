@@ -58,6 +58,19 @@ sealed class NavScreen(val item: MainNavItem) {
         const val NodeId = "nodeId"
         const val Name = "name"
     }
+
+    object BusStopRoute: NavScreen(
+        MainNavItem(
+            title = "",
+            route = "BusStopRoute",
+            routeWithPostFix = "BusStopRoute/{cityCode}/{routeId}/{number}/{nodeId}"
+        )
+    ) {
+        const val CityCode = "cityCode"
+        const val RouteId = "routeId"
+        const val Number = "number"
+        const val NodeId = "nodeId"
+    }
 }
 
 enum class BottomNavItems(val item: BottomNavItem) {
