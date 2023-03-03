@@ -1,14 +1,16 @@
 package com.example.network.repository
 
+import android.util.Log
+import com.example.mymanagement.database.FavoriteDao
+import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.network.model.BusEstimatedArrivalInfo
 import com.example.network.service.BusClient
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class BusRepositoryImpl @Inject constructor(
-    private val client: BusClient
+    private val client: BusClient,
+    private val favoriteDao: FavoriteDao
 ) : BusRepository {
 
     override fun fetchEstimatedArrivalInfoList(
@@ -36,7 +38,9 @@ class BusRepositoryImpl @Inject constructor(
                             )
                         } 정류장 전)"
                     },
-                    isFavorite = false
+                    isFavorite = favoriteDao.fetchFavoriteCountById(
+                        id = "${value[0].nodeId}${FavoriteEntity.Separator}${value[0].routeId}"
+                    ) > 0
                 )
             )
         }
@@ -46,6 +50,32 @@ class BusRepositoryImpl @Inject constructor(
         onError(it.message)
     }
 
+    override fun isFavoriteStation(nodeId: String): Flow<Boolean> =
+        favoriteDao.fetchFavoriteById(nodeId)
+
+    override suspend fun toggleBusStopFavoriteStatus(name: String, nodeId: String) {
+        try {
+            favoriteDao.favoriteInsertOrDelete(
+                type = FavoriteEntity.TypeBusStop,
+                id = nodeId,
+                name = name
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun toggleBusFavoriteStatus(info: BusEstimatedArrivalInfo) {
+        try {
+            favoriteDao.favoriteInsertOrDelete(
+                type = FavoriteEntity.TypeBus,
+                id = "${info.nodeId}${FavoriteEntity.Separator}${info.routeId}",
+                name = "${info.busNumber}${FavoriteEntity.Separator}${info.nodeName}"
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 }
 

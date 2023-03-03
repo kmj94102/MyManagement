@@ -38,5 +38,5 @@ data class BusEstimatedArrivalInfo(
     val nodeId: String,
     val nodeName: String,
     val arrInfo: List<String>,
-    val isFavorite: Boolean
+    var isFavorite: Boolean
 )

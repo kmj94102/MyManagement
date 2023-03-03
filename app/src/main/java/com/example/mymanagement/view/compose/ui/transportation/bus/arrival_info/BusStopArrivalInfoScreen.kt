@@ -64,8 +64,11 @@ fun BusStopArrivalInfoScreen(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.ic_star),
+                        painter = painterResource(id = if (viewModel.isFavoriteStation.value) R.drawable.ic_star else R.drawable.ic_star_empty),
                         contentDescription = "",
+                        modifier = Modifier.nonRippleClickable {
+                            viewModel.toggleBusStopFavoriteStatus(name)
+                        }
                     )
                 }
             }
@@ -111,7 +114,10 @@ fun BusStopArrivalInfoScreen(
                 items(arrivalInfoList.size) {
                     SmallBusStopArrivalInfoContainer(
                         info = arrivalInfoList[it],
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        onFavoriteClick = { info ->
+                            viewModel.toggleBusFavoriteStatus(info)
+                        }
                     )
                 }
             }
@@ -123,7 +129,8 @@ fun BusStopArrivalInfoScreen(
 @Composable
 fun SmallBusStopArrivalInfoContainer(
     info: BusEstimatedArrivalInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFavoriteClick: (BusEstimatedArrivalInfo) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -148,8 +155,11 @@ fun SmallBusStopArrivalInfoContainer(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.ic_star),
-                    contentDescription = ""
+                    painter = painterResource(id = if (info.isFavorite) R.drawable.ic_star else R.drawable.ic_star_empty),
+                    contentDescription = "",
+                    modifier = Modifier.nonRippleClickable {
+                        onFavoriteClick(info)
+                    }
                 )
             } // Row
 

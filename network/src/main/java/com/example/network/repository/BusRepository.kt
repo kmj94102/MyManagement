@@ -17,4 +17,13 @@ interface BusRepository {
         onError: (String?) -> Unit
     ): Flow<List<BusEstimatedArrivalInfo>>
 
+    /** 정류소 즐겨찾기 여부 조회 **/
+    fun isFavoriteStation(nodeId: String): Flow<Boolean>
+
+    /** 정류소 즐겨찾기 등록 **/
+    suspend fun toggleBusStopFavoriteStatus(name: String, nodeId: String)
+
+    /** 버스 즐겨찾기 등록 **/
+    suspend fun toggleBusFavoriteStatus(info: BusEstimatedArrivalInfo)
+
 }

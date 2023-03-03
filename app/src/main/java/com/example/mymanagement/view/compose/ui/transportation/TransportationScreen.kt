@@ -5,6 +5,8 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -184,17 +186,18 @@ fun TransportationBody(
                 )
             }
         } else {
-            LazyColumn(
+            LazyVerticalGrid(
                 contentPadding = PaddingValues(top = 8.dp, bottom = 20.dp),
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.padding(top = 10.dp)
             ) {
-                item {
-                    list.forEach {
-                        TransportationFavorite(
-                            favorite = it,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                items(list.size) {
+                    TransportationFavorite(
+                        favorite = list[it],
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             } // LazyColumn
         }
@@ -213,7 +216,7 @@ fun TransportationFavorite(
         modifier = modifier.height(87.dp)
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-            val (head, leftHall, rightHall, icon, contents) = createRefs()
+            val (head, leftHall, rightHall, contents) = createRefs()
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -222,7 +225,7 @@ fun TransportationFavorite(
                         top.linkTo(parent.top)
                         expandHorizontally()
                     }
-                    .background(Blue)
+                    .background(getBackgroundColor(favorite.type))
             ) {
                 Icon(
                     painter = painterResource(id = getFavoriteIconRes(favorite.type)),
@@ -292,6 +295,11 @@ fun TransportationFavorite(
             }
         } // ConstraintLayout
     } // Card
+}
+
+private fun getBackgroundColor(type: String) = when(type) {
+    FavoriteEntity.TypeSubway, FavoriteEntity.TypeSubwayDestination -> Green
+    else -> Blue
 }
 
 fun getFavoriteIconRes(type: String) = when (type) {
