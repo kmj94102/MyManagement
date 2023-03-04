@@ -3,6 +3,7 @@ package com.example.network.service
 import com.example.network.BuildConfig
 import com.example.network.model.StationsResults
 import com.example.network.model.SubwayArrivalInfoResult
+import com.example.network.model.SubwayRouteResult
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -20,5 +21,17 @@ interface SubwayService {
         @Path("start", encoded = true) start: Int,
         @Path("end", encoded = true) end: Int
     ): StationsResults
+
+    /** 지하철 이동 경로 조회 **/
+    @GET("http://apis.data.go.kr/B553766/smt-path")
+    suspend fun fetchSubwayRoute(
+        @Path("serviceKey") serviceKey: String = BuildConfig.BUS_AUTH_KEY,
+        @Path("pageNo") pageNo: Int,
+        @Path("numOfRows") numOfRows: Int,
+        @Path("dept_station_code") startStationCode: String,
+        @Path("dest_station_code") endStationCode: String,
+        @Path("week") week: String,
+        @Path("search_type") searchType: String = "FASTEST"
+    ): SubwayRouteResult
 
 }

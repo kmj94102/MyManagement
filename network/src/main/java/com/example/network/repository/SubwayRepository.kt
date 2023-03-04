@@ -3,6 +3,7 @@ package com.example.network.repository
 import com.example.mymanagement.database.entity.StationItem
 import com.example.network.model.SubwayArrival
 import com.example.network.model.SubwayArrivalInfo
+import com.example.network.model.SubwayRouteInfo
 import kotlinx.coroutines.flow.Flow
 
 interface SubwayRepository {
@@ -21,5 +22,12 @@ interface SubwayRepository {
 
     /** 지하철역 실시간 도착 정보 **/
     fun fetchRealtimeStationArrivals(keyword: String): Flow<List<SubwayArrival>>
+
+    /** 지하철 경로 조회 **/
+//    fun fetchSubwayRoute(
+//        startStationCode: String,
+//        endStationCode: String,
+//        week: String,
+//    ): Flow<SubwayRouteInfo>
 
 }

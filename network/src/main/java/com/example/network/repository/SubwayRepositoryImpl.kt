@@ -10,6 +10,7 @@ import com.example.network.R
 import com.example.network.model.SubwayArrival
 import com.example.network.model.SubwayArrivalInfo
 import com.example.network.model.SubwayArrivalItem
+import com.example.network.model.SubwayRouteInfo
 import com.example.network.service.SubwayClient
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -108,5 +109,12 @@ class SubwayRepositoryImpl @Inject constructor(
         )
         emit(items.sortedBy { it.subwayLineId })
     }
+
+//    override fun fetchSubwayRoute(
+//        startStationCode: String,
+//        endStationCode: String,
+//        week: String
+//    ): Flow<SubwayRouteInfo> {
+//    }
 
 }
