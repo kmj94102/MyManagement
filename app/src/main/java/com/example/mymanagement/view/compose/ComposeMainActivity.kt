@@ -38,9 +38,6 @@ class ComposeMainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    var selectItem by remember {
-        mutableStateOf<NavItem>(BottomNavItems.Home.item)
-    }
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Black)
 
@@ -61,10 +58,7 @@ fun MainScreen() {
                 .padding(it)
         ) {
             NavigationGraph(
-                navController = navController,
-                changeListener = { item ->
-                    selectItem = item
-                }
+                navController = navController
             )
         }
     }

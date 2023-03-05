@@ -18,8 +18,7 @@ import com.example.mymanagement.view.compose.ui.transportation.subway.SubwaySear
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController,
-    changeListener: (NavItem) -> Unit,
+    navController: NavHostController
 ) {
     val onBackClick: () -> Unit = { navController.popBackStack() }
 
@@ -32,7 +31,6 @@ fun NavigationGraph(
             route = BottomNavItems.Home.item.routeWithPostFix
         ) {
             HomeScreen()
-            changeListener(BottomNavItems.Home.item)
         }
         /** 교통 화면 **/
         composable(
@@ -46,21 +44,18 @@ fun NavigationGraph(
                     navController.navigate(NavScreen.SubwaySearch.item.routeWithPostFix)
                 }
             )
-            changeListener(BottomNavItems.Transportation.item)
         }
         /** 일정 화면 **/
         composable(
             route = BottomNavItems.Schedule.item.routeWithPostFix
         ) {
             ScheduleScreen()
-            changeListener(BottomNavItems.Schedule.item)
         }
         /** 기타 화면 **/
         composable(
             route = BottomNavItems.Other.item.routeWithPostFix
         ) {
             OtherScreen()
-            changeListener(BottomNavItems.Other.item)
         }
         /** 버스 검색 화면 **/
         composable(
@@ -79,7 +74,6 @@ fun NavigationGraph(
                 },
                 onBackClick = onBackClick
             )
-            changeListener(NavScreen.BusStationSearch.item)
         }
         /** 버스 정류소 도착 정보 화면 **/
         composable(
@@ -143,7 +137,6 @@ fun NavigationGraph(
             SubwaySearchScreen(
                 onBackClick = onBackClick
             )
-            changeListener(NavScreen.SubwaySearch.item)
         }
     }
 

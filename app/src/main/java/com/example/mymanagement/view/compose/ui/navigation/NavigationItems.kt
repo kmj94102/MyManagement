@@ -14,8 +14,7 @@ interface NavItem {
 data class MainNavItem(
     override val title: String,
     override val route: String,
-    override val routeWithPostFix: String = route,
-    val tailIcons: (@Composable () -> Unit)? = null,
+    override val routeWithPostFix: String = route
 ) : NavItem
 
 data class BottomNavItem(
