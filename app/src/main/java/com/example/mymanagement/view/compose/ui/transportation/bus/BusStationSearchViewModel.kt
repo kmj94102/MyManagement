@@ -20,37 +20,26 @@ class BusStationSearchViewModel @Inject constructor(
     private val _cameraLatLng = mutableStateOf(getSeoulLatLng())
     val cameraLatLng: State<LatLng> = _cameraLatLng
 
-    private var isKeyword = true
-
     private val _place: MutableSharedFlow<String> = MutableSharedFlow(replay = 1)
-    var place = _place.flatMapLatest {
+    val place = _place.flatMapLatest {
         kakaoRepository.searchBusStopList(
             keyword = it,
             latitude = _cameraLatLng.value.latitude,
             longitude = _cameraLatLng.value.longitude,
-            isKeyword = isKeyword,
             cameraLocation = { lat, lng ->
                 _cameraLatLng.value = LatLng(lat, lng)
             },
-            onComplete = {
-
-            },
-            onError = {
-
-            }
         )
     }
 
-    // 키워드로 버스 정류장 검색
+    /** 키워드로 버스 정류장 검색 **/
     fun searchBusStopByKeyword(keyword: String) {
-        isKeyword = true
         _place.tryEmit(keyword)
     }
 
-    // 위치로 버스 정류장 검색
+    /** 위치로 버스 정류장 검색 **/
     fun searchBusStopByLocation(latLng: LatLng) {
         _cameraLatLng.value = latLng
-        isKeyword = false
         _place.tryEmit("")
     }
 }

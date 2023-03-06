@@ -14,8 +14,8 @@ interface FavoriteDao {
     @Query("DELETE FROM FavoriteEntity WHERE id = :id")
     suspend fun deleteFavorite(id: String)
 
-    @Query("SELECT COUNT(*) FROM FavoriteEntity WHERE id = :id")
-    suspend fun fetchFavoriteCountById(id: String): Int
+    @Query("SELECT EXISTS(SELECT * FROM FavoriteEntity WHERE id = :id)")
+    suspend fun fetchFavoriteCountById(id: String): Boolean
 
     @Transaction
     suspend fun favoriteInsertOrDelete(
@@ -23,7 +23,7 @@ interface FavoriteDao {
         id: String,
         name: String
     ) {
-        if (fetchFavoriteCountById(id) > 0){
+        if (fetchFavoriteCountById(id)){
             deleteFavorite(id)
         } else {
             insertFavorite(

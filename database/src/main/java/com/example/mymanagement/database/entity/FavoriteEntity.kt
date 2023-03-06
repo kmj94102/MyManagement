@@ -1,13 +1,21 @@
 package com.example.mymanagement.database.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
  * 즐겨 찾기
- * @param type
+ * @param type Bus, BusStop, Subway, SubwayDestination 중 1개 선택 (const 제공)
+ * @param startTime 시작 시간
+ * @param endTime 종료 시간
+ * @param name 이름
+ * @param id 서버 조회를 위한 아이디
+ * @param timeStamp 등록 시간
  * **/
-@Entity
+@Entity(indices = [
+    Index(unique = true, value = ["id", "name"])
+])
 data class FavoriteEntity(
     @PrimaryKey(autoGenerate = true) val index: Int,
     val type: String,
@@ -17,7 +25,7 @@ data class FavoriteEntity(
     val id: String,
     val timeStamp: Long
 ) {
-    fun mapper(): Favorite = Favorite(
+    fun toFavorite(): Favorite = Favorite(
         type = type,
         time = "$startTime - $endTime",
         name = name,
@@ -32,6 +40,13 @@ data class FavoriteEntity(
     }
 }
 
+/**
+ * 즐겨찾기 정보
+ * @param type 즐겨찾기 타입
+ * @param time 홈 노출 시간
+ * @param name 이름
+ * @param id 아이디
+ * **/
 data class Favorite(
     val type: String,
     val time: String,

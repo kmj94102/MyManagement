@@ -1,5 +1,6 @@
 package com.example.network.model
 
+import com.example.mymanagement.database.entity.FavoriteEntity
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -29,7 +30,21 @@ data class BusStopRoute(
     val routeId: String,
     @SerializedName("updowncd")
     val upDownCode: Int
-)
+) {
+    fun toBusStopRouteItem(
+        isEndNode: Boolean,
+        isFavorite: Boolean
+    ) = BusStopRouteItem(
+        nodeId = nodeId,
+        nodeName = nodeName,
+        nodeNumber = nodeNumber,
+        routeId = routeId,
+        upDownCode = upDownCode,
+        isStartNode = index == 1,
+        isEndNode = isEndNode,
+        isFavorite = isFavorite
+    )
+}
 
 data class BusStopRouteItem(
     val nodeId: String,

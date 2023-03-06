@@ -8,18 +8,15 @@ interface MapRepository {
     /**
      * 버스 정류소 조회
      * @param keyword 키워드
+     * @param latitude 위도
+     * @param longitude 경도
      * @param cameraLocation 검색 후 지도 위치
-     * @param onComplete 완료 리스너
-     * @param onError 오류 리스너
      * **/
     fun searchBusStopList(
         keyword: String,
         latitude: Double = 0.0,
         longitude: Double = 0.0,
-        isKeyword: Boolean,
         cameraLocation: (Double, Double) -> Unit,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
     ) : Flow<List<BusStop>>
 
 }

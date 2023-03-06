@@ -35,11 +35,11 @@ class BusStopArrivalInfoViewModel @Inject constructor(
     val arrivalInfoList = sharedFlow.flatMapLatest {
         repository.fetchEstimatedArrivalInfoList(
             cityCode = _cityCode.value,
-            nodeId = nodeId,
-            onComplete = { _isProgress.value = false },
-            onError = {}
+            nodeId = nodeId
         )
     }.onStart { _isProgress.value = true }
+        .onCompletion { _isProgress.value = false }
+        .catch { it.printStackTrace() }
 
     init {
         savedStateHandle.get<Int>(NavScreen.BusStopArrivalInfo.CityCode)?.let {
@@ -52,8 +52,10 @@ class BusStopArrivalInfoViewModel @Inject constructor(
         fetchStationFavoriteStatus()
     }
 
+    /** 버스 도착 정보 조회 **/
     fun fetchEstimatedArrivalInfoList() = sharedFlow.tryEmit(Unit)
 
+    /** 버스 정류장 즐겨찾기 상태 조회 **/
     private fun fetchStationFavoriteStatus() {
         repository.isFavoriteStation(nodeId)
             .onEach { _isFavoriteStation.value = it }
@@ -61,6 +63,7 @@ class BusStopArrivalInfoViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    /** 버스 정류장 즐겨찾기 상태 변경 **/
     fun toggleBusStopFavoriteStatus(
         name: String
     ) = viewModelScope.launch {
@@ -70,6 +73,7 @@ class BusStopArrivalInfoViewModel @Inject constructor(
         )
     }
 
+    /** 버스 즐겨찾기 상태 변경 **/
     fun toggleBusFavoriteStatus(
         info: BusEstimatedArrivalInfo
     ) = viewModelScope.launch {

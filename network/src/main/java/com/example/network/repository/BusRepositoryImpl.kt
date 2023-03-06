@@ -1,11 +1,11 @@
 package com.example.network.repository
 
-import android.util.Log
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.network.model.BusEstimatedArrivalInfo
 import com.example.network.model.BusStopRoute
 import com.example.network.model.BusStopRouteItem
+import com.example.network.model.toBusEstimatedArrivalInfo
 import com.example.network.service.BusClient
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -18,38 +18,26 @@ class BusRepositoryImpl @Inject constructor(
     override fun fetchEstimatedArrivalInfoList(
         cityCode: Int,
         nodeId: String,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
     ) = flow {
-        val list = mutableListOf<BusEstimatedArrivalInfo>()
-        client.fetchEstimatedArrivalInfoList(
-            cityCode = cityCode,
-            nodeId = nodeId
-        ).groupBy { it.routeId }.forEach { (_, value) ->
-            list.add(
-                BusEstimatedArrivalInfo(
-                    busNumber = "${value[0].routeNo}",
-                    routeId = value[0].routeId,
-                    nodeId = value[0].nodeId,
-                    nodeName = value[0].nodeNm,
-                    arrInfo = value.map { info ->
-                        "${minSecFormat(info.arrTime)} (${
-                            kotlin.math.max(
-                                info.arrPrevStationCnt,
-                                1
-                            )
-                        } 정류장 전)"
-                    },
-                    isFavorite = favoriteDao.fetchFavoriteCountById(
-                        id = "${value[0].nodeId}${FavoriteEntity.Separator}${value[0].routeId}"
-                    ) > 0
+        try {
+            val list = mutableListOf<BusEstimatedArrivalInfo>()
+            client.fetchEstimatedArrivalInfoList(
+                cityCode = cityCode,
+                nodeId = nodeId
+            ).groupBy { it.routeId }.forEach { (_, value) ->
+                list.add(
+                    value.toBusEstimatedArrivalInfo(
+                        isFavorite = favoriteDao.fetchFavoriteCountById(
+                            id = "${value[0].nodeId}${FavoriteEntity.Separator}${value[0].routeId}"
+                        )
+                    )
                 )
-            )
+            }
+            emit(list)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(emptyList())
         }
-        emit(list)
-    }.onCompletion { onComplete() }.catch {
-        it.printStackTrace()
-        onError(it.message)
     }
 
     override fun isFavoriteStation(nodeId: String): Flow<Boolean> =
@@ -104,32 +92,13 @@ class BusRepositoryImpl @Inject constructor(
         }
         emit(
             list.map {
-                BusStopRouteItem(
-                    nodeId = it.nodeId,
-                    nodeName = it.nodeName,
-                    nodeNumber = it.nodeNumber,
-                    routeId = it.routeId,
-                    upDownCode = it.upDownCode,
-                    isStartNode = it.index == 1,
+                it.toBusStopRouteItem(
                     isEndNode = it.index == totalCount,
                     isFavorite = favoriteDao.fetchFavoriteCountById(
                         "${it.nodeId}${FavoriteEntity.Separator}${it.routeId}"
-                    ) > 0
+                    )
                 )
             }
         )
-    }
-}
-
-private fun minSecFormat(originSec: Int): String {
-    val min = originSec / 60
-    val sec = originSec % 60
-
-    return if (min == 0 && sec == 0) {
-        "곧 도착"
-    } else if (min == 0) {
-        "${sec.toString().padStart(2, '0')}초"
-    } else {
-        "${min}분 ${sec.toString().padStart(2, '0')}초"
     }
 }

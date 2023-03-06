@@ -76,62 +76,61 @@ fun BusStopArrivalInfoScreen(
         )
 
         // 바디 영역
-        if (arrivalInfoList.isEmpty()) {
-            Spacer(modifier = Modifier.weight(1f))
-            CommonLottie(rawRes = R.raw.empty)
-            Text(
-                text = "해당 정류소의 버스 정보를 불러오지 못하였습니다.",
-                style = textStyle12(),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        } else if (arrivalInfoList.size == 1) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 25.dp, bottom = 23.dp, start = 20.dp, end = 20.dp)
-            ) {
-                BigBusStopArrivalInfoContainer(
-                    arrivalInfoList[0],
-                    onRouteClick = {
-                        onRouteClick(viewModel.cityCode.value, it.routeId, it.busNumber, it.nodeId)
-                    }
+        when(arrivalInfoList.size) {
+            0 -> {
+                Spacer(modifier = Modifier.weight(1f))
+                CommonLottie(rawRes = R.raw.empty)
+                Text(
+                    text = "해당 정류소의 버스 정보를 불러오지 못하였습니다.",
+                    style = textStyle12(),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                CommonButton(
-                    text = "노선 보기",
-                    modifier = Modifier.fillMaxWidth()
+            } // when -> 0
+            1 -> {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 25.dp, bottom = 23.dp, start = 20.dp, end = 20.dp)
                 ) {
-
-                }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                contentPadding = PaddingValues(
-                    top = 25.dp,
-                    bottom = 100.dp,
-                    start = 20.dp,
-                    end = 20.dp
-                )
-            ) {
-                items(arrivalInfoList.size) {
-                    SmallBusStopArrivalInfoContainer(
-                        info = arrivalInfoList[it],
-                        modifier = Modifier.fillMaxWidth(),
-                        onFavoriteClick = { info ->
-                            viewModel.toggleBusFavoriteStatus(info)
-                        },
-                        onRouteClick = { item ->
-                            onRouteClick(viewModel.cityCode.value, item.routeId, item.busNumber, item.nodeId)
-                        }
+                    val item = arrivalInfoList[0]
+                    BigBusStopArrivalInfoContainer(item)
+                    Spacer(modifier = Modifier.weight(1f))
+                    CommonButton(
+                        text = "노선 보기",
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        onRouteClick(viewModel.cityCode.value, item.routeId, item.busNumber, item.nodeId)
+                    }
+                } // Column
+            } // when -> 1
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                    contentPadding = PaddingValues(
+                        top = 25.dp,
+                        bottom = 100.dp,
+                        start = 20.dp,
+                        end = 20.dp
                     )
-                }
-            }
-        }
-
+                ) {
+                    items(arrivalInfoList.size) {
+                        SmallBusStopArrivalInfoContainer(
+                            info = arrivalInfoList[it],
+                            modifier = Modifier.fillMaxWidth(),
+                            onFavoriteClick = { info ->
+                                viewModel.toggleBusFavoriteStatus(info)
+                            },
+                            onRouteClick = { item ->
+                                onRouteClick(viewModel.cityCode.value, item.routeId, item.busNumber, item.nodeId)
+                            }
+                        )
+                    } // items
+                } // LazyColumn
+            } // when -> else
+        } // When
     }
 }
 
@@ -205,7 +204,6 @@ fun SmallBusStopArrivalInfoContainer(
 @Composable
 fun BigBusStopArrivalInfoContainer(
     info: BusEstimatedArrivalInfo,
-    onRouteClick: (BusEstimatedArrivalInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -215,19 +213,7 @@ fun BigBusStopArrivalInfoContainer(
         modifier = modifier
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-            val (busNumber, favorite, lottie, lottieBg, arrInfo, route) = createRefs()
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_route),
-                contentDescription = "",
-                tint = White,
-                modifier = Modifier
-                    .constrainAs(route) {
-                        centerVerticallyTo(busNumber)
-                        start.linkTo(parent.start, 20.dp)
-                    }
-                    .nonRippleClickable { onRouteClick(info) }
-            )
+            val (busNumber, favorite, lottie, lottieBg, arrInfo) = createRefs()
 
             Text(
                 text = info.busNumber,
@@ -286,9 +272,9 @@ fun BigBusStopArrivalInfoContainer(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-            }
-        }
-    }
+            } // Column
+        } // ConstraintLayout
+    } // Card
 }
 
 @Composable

@@ -7,15 +7,13 @@ import kotlinx.coroutines.flow.Flow
 interface BusRepository {
 
     /**
-     * 정류소 별 도착 예정 정보 목록 조회
+     * 정류소의 버스 별 도착 예정 정보 목록 조회
      * @param cityCode 도시 코드
      * @param nodeId 정류소 ID
      * **/
     fun fetchEstimatedArrivalInfoList(
         cityCode: Int,
         nodeId: String,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
     ): Flow<List<BusEstimatedArrivalInfo>>
 
     /** 정류소 즐겨찾기 여부 조회 **/

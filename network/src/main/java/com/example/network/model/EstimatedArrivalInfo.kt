@@ -1,6 +1,7 @@
 package com.example.network.model
 
 import com.google.gson.annotations.SerializedName
+import kotlin.math.max
 
 /**
  * 도착 예정 정보
@@ -40,3 +41,28 @@ data class BusEstimatedArrivalInfo(
     val arrInfo: List<String>,
     var isFavorite: Boolean
 )
+
+fun List<EstimatedArrivalInfo>.toBusEstimatedArrivalInfo(isFavorite: Boolean) =
+    BusEstimatedArrivalInfo(
+        busNumber = "${this[0].routeNo}",
+        routeId = this[0].routeId,
+        nodeId = this[0].nodeId,
+        nodeName = this[0].nodeNm,
+        arrInfo = this.map { info ->
+            "${minSecFormat(info.arrTime)} (${max(info.arrPrevStationCnt, 1)} 정류장 전)"
+        },
+        isFavorite = isFavorite
+    )
+
+private fun minSecFormat(originSec: Int): String {
+    val min = originSec / 60
+    val sec = originSec % 60
+
+    return if (min == 0 && sec == 0) {
+        "곧 도착"
+    } else if (min == 0) {
+        "${sec.toString().padStart(2, '0')}초"
+    } else {
+        "${min}분 ${sec.toString().padStart(2, '0')}초"
+    }
+}

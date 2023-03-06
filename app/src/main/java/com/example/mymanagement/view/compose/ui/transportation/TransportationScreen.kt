@@ -90,17 +90,15 @@ fun TransportationHeader(
             TransportationSelectButton(
                 image = R.drawable.ic_bus,
                 text = "버스\n시간 조회",
-                modifier = Modifier.weight(1f)
-            ) {
-                goToSearchBusStation()
-            }
+                modifier = Modifier.weight(1f),
+                onClick = goToSearchBusStation
+            )
             TransportationSelectButton(
                 image = R.drawable.ic_subway,
                 text = "지하철\n시간 조회",
-                modifier = Modifier.weight(1f)
-            ) {
-                goToSearchSubway()
-            }
+                modifier = Modifier.weight(1f),
+                onClick = goToSearchSubway
+            )
         } // Row
 
     } // Column
@@ -166,8 +164,8 @@ fun TransportationBody(
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                painter = painterResource(id = R.drawable.ic_plus),
-                contentDescription = "add",
+                painter = painterResource(id = R.drawable.ic_setting),
+                contentDescription = "setting",
                 modifier = Modifier.size(24.dp)
             )
         } // Row

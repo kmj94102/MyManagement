@@ -24,6 +24,7 @@ import com.example.mymanagement.view.compose.ui.navigation.NavScreen
 import com.example.mymanagement.view.compose.ui.theme.White
 import com.example.network.model.BusStop
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.LocationServices
@@ -109,14 +110,10 @@ fun BusStationSearchScreen(
                         },
                         modifier = Modifier.weight(1f)
                     ) {
-                        // 권한 요청
-                        permission.launchPermissionRequest()
-                        if (permission.status.isGranted) {
-                            getDeviceLocation(context = context) {
-                                viewModel.searchBusStopByLocation(it)
-                            }
+                        getDeviceLocation(context = context, permissionState = permission) {
+                            viewModel.searchBusStopByLocation(it)
                         }
-                    }
+                    } // CommonButton
 
                     Spacer(modifier = Modifier.width(16.dp))
 
@@ -136,25 +133,25 @@ fun BusStationSearchScreen(
                         viewModel.searchBusStopByLocation(
                             latLng = cameraPositionState.position.target
                         )
-                    }
-                }
-            }
+                    } // CommonButton
+                } // Row
+            } // Column
         }
-    }
+    } // Box
 
 }
 
 /** 내 위치 조회 **/
+@OptIn(ExperimentalPermissionsApi::class)
 private fun getDeviceLocation(
     context: Context,
+    permissionState: PermissionState,
     resultListener: (LatLng) -> Unit
 ) {
     val fusedLocation = LocationServices.getFusedLocationProviderClient(context)
     try {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
         ) {
             val locationResult = fusedLocation.lastLocation
             locationResult.addOnCompleteListener { task ->
@@ -165,6 +162,9 @@ private fun getDeviceLocation(
                     )
                 }
             }
+        } else {
+            // 권한 요청
+            permissionState.launchPermissionRequest()
         }
 
     } catch (e: Exception) {

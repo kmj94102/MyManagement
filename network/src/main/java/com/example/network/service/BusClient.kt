@@ -16,19 +16,6 @@ class BusClient @Inject constructor(
     ).response.body.items.item
 
     /**
-     * 정류소 별 경유 노선 목록 조회
-     * @param cityCode 도시 코드
-     * @param nodeId 정류소 ID
-     * **/
-    suspend fun fetchTransitRouteList(
-        cityCode: Int,
-        nodeId: String
-    ) = service.fetchTransitRouteList(
-        cityCode = cityCode,
-        nodeId = nodeId
-    )
-
-    /**
      * 정류소 별 도착 예정 정보 목록 조회
      * @param cityCode 도시 코드
      * @param nodeId 정류소 ID

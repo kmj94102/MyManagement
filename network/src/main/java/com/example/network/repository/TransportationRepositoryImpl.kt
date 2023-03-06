@@ -11,8 +11,6 @@ class TransportationRepositoryImpl @Inject constructor(
 ): TransportationRepository {
 
     override fun fetchFavoriteList(): Flow<List<Favorite>> =
-        dao.fetchFavoriteList().map { it.map { entity -> entity.mapper() } }
-
-
+        dao.fetchFavoriteList().map { it.map { entity -> entity.toFavorite() } }
 
 }
