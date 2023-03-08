@@ -118,3 +118,5 @@ object TopWithFooter: Arrangement.Vertical {
     }
 
 }
+
+fun getColorWithHexCode(hexCode: String) = Color(java.lang.Long.decode(hexCode))

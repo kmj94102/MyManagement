@@ -21,6 +21,7 @@ enum class SubwayLine(
     LINE_77("1077", "신분당선", 0xFFFF8C00),
     LINE_91("1091", "자기부상", 0xFFFFB156),
     LINE_92("1092", "우이신설경전철", 0xFFFFB156),
+    LINE_99("1099", "의정부경전철", 0xFFFF8C00),
     UNKNOWN("", "???", 0XFF17181D);
 
     companion object {

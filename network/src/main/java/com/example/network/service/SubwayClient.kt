@@ -14,14 +14,6 @@ class SubwayClient @Inject constructor(
         keyword = keyword
     ).realtimeArrivalList
 
-    suspend fun fetchSubwayStationList(
-        start: Int,
-        end: Int
-    ) = service.fetchSubwayStationList(
-        start = start,
-        end = end
-    ).info
-
     suspend fun fetchSubwayRoute(
         pageNo: Int,
         numOfRows: Int,

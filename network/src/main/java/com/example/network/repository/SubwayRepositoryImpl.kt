@@ -40,8 +40,11 @@ class SubwayRepositoryImpl @Inject constructor(
                 stationInfoList.add(
                     StationEntity(
                         lineNum = infoList[0],
-                        stationCode = infoList[1],
-                        stationName = infoList[2]
+                        lineName = infoList[1],
+                        stationId = infoList[2],
+                        stationName = infoList[3].replace("&", ","),
+                        stationCode = infoList[4].padStart(4, '0'),
+                        outerCode = infoList[5]
                     )
                 )
             }

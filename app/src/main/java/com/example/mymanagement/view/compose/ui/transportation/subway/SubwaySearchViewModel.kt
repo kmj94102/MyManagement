@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import okhttp3.internal.filterList
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -43,8 +42,7 @@ class SubwaySearchViewModel @Inject constructor(
     val stationItems = stationItemsSharedFlow.flatMapLatest {
         repository.fetchStationItems(
             stationName = it,
-            allOrFavorite = allOrFavorite,
-//            selectLines = _lineNumbersMap.filterValues { value -> value }.keys.toList()
+            allOrFavorite = allOrFavorite
         )
     }.onStart { _isProgress.value = true }
         .onCompletion { _isProgress.value = false }
@@ -56,20 +54,6 @@ class SubwaySearchViewModel @Inject constructor(
                 throw cause // 그 외의 경우에는 예외를 다시 던짐
             }
         }
-//        .map {
-//            it.filterList {
-//                _lineNumbersMap
-//                    .filterValues { value -> value }
-//                    .keys
-//                    .toList()
-//                    .any { selectLine ->
-//                        lineNames.split(",").contains(selectLine)
-//                    }
-//            }.ifEmpty {
-//                _isProgress.value = false
-//                emptyList()
-//            }
-//        }
         .catch { it.printStackTrace() }
 
     private val _arrivalInfoMap = MutableStateFlow<List<SubwayArrival>>(listOf())
