@@ -7,16 +7,15 @@ import com.example.mymanagement.database.entity.FavoriteEntity
 import com.example.mymanagement.database.entity.StationEntity
 import com.example.mymanagement.database.entity.StationItem
 import com.example.network.R
-import com.example.network.model.SubwayArrival
-import com.example.network.model.SubwayArrivalInfo
-import com.example.network.model.SubwayArrivalItem
-import com.example.network.model.SubwayRouteInfo
+import com.example.network.model.*
 import com.example.network.service.SubwayClient
-import dagger.hilt.android.qualifiers.ActivityContext
+import com.example.network.util.priceFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 class SubwayRepositoryImpl @Inject constructor(
@@ -113,11 +112,50 @@ class SubwayRepositoryImpl @Inject constructor(
         emit(items.sortedBy { it.subwayLineId })
     }
 
-//    override fun fetchSubwayRoute(
-//        startStationCode: String,
-//        endStationCode: String,
-//        week: String
-//    ): Flow<SubwayRouteInfo> {
-//    }
+    override fun fetchSubwayRoute(
+        searchTime: String,
+        startStationCode: String,
+        endStationCode: String,
+        week: String
+    ): Flow<SubwayRouteInfo> = flow {
+        val list = mutableListOf<RouteItem>()
+        val numberOfRow = 50
+        var pageNumber = 1
+        var totalCount: Int? = null
+        var arrivalTime = ""
+        var fee = 0
+        var transferCount = 0
+
+        try {
+            while (totalCount == null || (pageNumber - 1) * numberOfRow < totalCount) {
+                val result = client.fetchSubwayRoute(
+                    pageNo = pageNumber,
+                    numOfRows = numberOfRow,
+                    searchTime = searchTime,
+                    startStationCode = startStationCode,
+                    endStationCode = endStationCode,
+                    week = week
+                )
+                arrivalTime = result.data.arrivalTime
+                fee = result.data.fee
+                list.addAll(result.data.route.map { it.toRouteItem() })
+                totalCount = result.totalCount
+                transferCount = result.data.transfer
+                pageNumber++
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        emit(
+            SubwayRouteInfo(
+                deptTime = list.getOrNull(0)?.time ?: "",
+                arrivalTime = formatTime(arrivalTime),
+                transferCount = transferCount,
+                fee = fee.priceFormat(),
+                list = list
+            )
+        )
+    }
 
 }

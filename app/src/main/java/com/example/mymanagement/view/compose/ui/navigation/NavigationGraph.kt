@@ -15,6 +15,7 @@ import com.example.mymanagement.view.compose.ui.transportation.bus.BusStationSea
 import com.example.mymanagement.view.compose.ui.transportation.bus.arrival_info.BusStopArrivalInfoScreen
 import com.example.mymanagement.view.compose.ui.transportation.bus.route.BusStopRouteScreen
 import com.example.mymanagement.view.compose.ui.transportation.subway.SubwaySearchScreen
+import com.example.mymanagement.view.compose.ui.transportation.subway.destination_route.DestinationRouteScreen
 
 @Composable
 fun NavigationGraph(
@@ -135,8 +136,51 @@ fun NavigationGraph(
             route = NavScreen.SubwaySearch.item.routeWithPostFix
         ) {
             SubwaySearchScreen(
+                onBackClick = onBackClick,
+                goToDestinationRoute = { start, end ->
+                    navController.navigate(
+                        makeRouteWithArgs(
+                            NavScreen.SubwayDestinationRoute.item.route,
+                            start.stationCode,
+                            start.stationName,
+                            end.stationCode,
+                            end.stationName
+                        )
+                    )
+                }
+            )
+        }
+        /** 지하철 목적지 경로 화면 **/
+        composable(
+            route = NavScreen.SubwayDestinationRoute.item.routeWithPostFix,
+            arguments = listOf(
+                navArgument(NavScreen.SubwayDestinationRoute.StartStationCode) {
+                    type = NavType.StringType
+                },
+                navArgument(NavScreen.SubwayDestinationRoute.StartStationName) {
+                    type = NavType.StringType
+                },
+                navArgument(NavScreen.SubwayDestinationRoute.EndStationCode) {
+                    type = NavType.StringType
+                },
+                navArgument(NavScreen.SubwayDestinationRoute.EndStationName) {
+                    type = NavType.StringType
+                },
+            )
+        ) { entry ->
+            entry.arguments?.getString(NavScreen.SubwayDestinationRoute.StartStationCode)
+                ?: return@composable
+            entry.arguments?.getString(NavScreen.SubwayDestinationRoute.EndStationCode)
+                ?: return@composable
+
+            DestinationRouteScreen(
+                startStation = entry.arguments?.getString(NavScreen.SubwayDestinationRoute.StartStationName)
+                    ?: "",
+                endStation = entry.arguments?.getString(NavScreen.SubwayDestinationRoute.EndStationName)
+                    ?: "",
                 onBackClick = onBackClick
             )
+
         }
     }
 

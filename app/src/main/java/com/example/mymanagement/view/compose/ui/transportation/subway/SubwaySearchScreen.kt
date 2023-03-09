@@ -29,7 +29,6 @@ import com.example.mymanagement.view.compose.ui.custom.CommonHeader
 import com.example.mymanagement.view.compose.ui.custom.CommonLottie
 import com.example.mymanagement.view.compose.ui.custom.SearchTextField
 import com.example.mymanagement.view.compose.ui.navigation.NavScreen
-import com.example.mymanagement.view.compose.ui.theme.Blue
 import com.example.mymanagement.view.compose.ui.theme.Gray
 import com.example.mymanagement.view.compose.ui.theme.Green
 import com.example.mymanagement.view.compose.ui.theme.White
@@ -40,6 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SubwaySearchScreen(
     onBackClick: () -> Unit,
+    goToDestinationRoute: (StationItem, StationItem) -> Unit,
     viewModel: SubwaySearchViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState(
@@ -105,7 +105,8 @@ fun SubwaySearchScreen(
                 },
                 onChangeClick = {
                     viewModel.swapDepartureAndArrival()
-                }
+                },
+                goToDestinationRoute = goToDestinationRoute
             )
             // 풋터 영역
             SubwaySearchFooter(
@@ -138,7 +139,8 @@ fun SubwaySearchBody(
     onUpdate: (StationItem) -> Unit,
     onDepartureClick: (StationItem) -> Unit,
     onArrivalClick: (StationItem) -> Unit,
-    onChangeClick: () -> Unit
+    onChangeClick: () -> Unit,
+    goToDestinationRoute: (StationItem, StationItem) -> Unit
 ) {
     if (list.isEmpty()) {
         Column(
@@ -163,7 +165,7 @@ fun SubwaySearchBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
-                    .border(1.dp, Blue, RoundedCornerShape(6.dp))
+                    .border(1.dp, Green, RoundedCornerShape(6.dp))
             ) {
                 val (leftCircle, rightCircle, dashedDivider,
                     txtDeparture, txtArrival, btnChange, button) = createRefs()
@@ -173,8 +175,12 @@ fun SubwaySearchBody(
                     modifier = Modifier
                         .size(44.dp, 63.dp)
                         .clip(RoundedCornerShape(topEnd = 6.dp, bottomEnd = 6.dp))
-                        .background(if (arrival != null && departure != null) Blue else Gray)
-                        .nonRippleClickable { }
+                        .background(if (arrival != null && departure != null) Green else Gray)
+                        .nonRippleClickable {
+                            if (arrival != null && departure != null) {
+                                goToDestinationRoute(departure, arrival)
+                            }
+                        }
                         .constrainAs(button) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
@@ -193,7 +199,7 @@ fun SubwaySearchBody(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(26.dp)
-                        .border(1.dp, Blue, CircleShape)
+                        .border(1.dp, Green, CircleShape)
                         .nonRippleClickable { onChangeClick() }
                         .constrainAs(btnChange) {
                             start.linkTo(parent.start)
@@ -204,7 +210,7 @@ fun SubwaySearchBody(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_change),
                         contentDescription = null,
-                        tint = Blue,
+                        tint = Green,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -240,7 +246,7 @@ fun SubwaySearchBody(
                 Box(
                     modifier = Modifier
                         .size(8.dp)
-                        .border(1.dp, Blue, CircleShape)
+                        .border(1.dp, Green, CircleShape)
                         .constrainAs(leftCircle) {
                             centerHorizontallyTo(txtDeparture)
                             top.linkTo(parent.top, 10.dp)
@@ -251,7 +257,7 @@ fun SubwaySearchBody(
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(Blue)
+                        .background(Green)
                         .constrainAs(rightCircle) {
                             centerHorizontallyTo(txtArrival)
                             top.linkTo(parent.top, 10.dp)

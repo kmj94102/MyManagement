@@ -39,6 +39,20 @@ sealed class NavScreen(val item: MainNavItem) {
             route = "SearchSubwayScreen"
         )
     )
+
+    object SubwayDestinationRoute: NavScreen(
+        MainNavItem(
+            title = "지하철 목적지 경로",
+            route = "DestinationRoute",
+            routeWithPostFix = "DestinationRoute/{startCode}/{startName}/{endCode}/{endName}"
+        )
+    ) {
+        const val StartStationCode = "startCode"
+        const val StartStationName = "startName"
+        const val EndStationCode = "endCode"
+        const val EndStationName = "endName"
+    }
+
     object BusStationSearch: NavScreen(
         MainNavItem(
             title = "버스 정류소 검색",
