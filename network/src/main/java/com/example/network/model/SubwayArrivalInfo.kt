@@ -13,6 +13,7 @@ data class SubwayArrivalInfoResult(
  * @param prevStationId 이전지하철역ID
  * @param nextStationId 다음지하철역ID
  * @param destinationName 종착지하철역명
+ * @param stationId 지하철 역 ID
  * @param subwayType 열차 종류 (급행, ITX)
  * @param arrTime 열차도착예정시간 (단위:초)
  * **/
@@ -28,6 +29,8 @@ data class SubwayArrivalInfo(
     val destinationName: String,
     @SerializedName("statnNm")
     val stationName: String,
+    @SerializedName("statnId")
+    val stationId: String,
     @SerializedName("btrainSttus")
     val subwayType: String,
     @SerializedName("barvlDt")
@@ -38,6 +41,7 @@ data class SubwayArrivalInfo(
 
 /**
  * @param subwayLineId 지하철 호선 아이디
+ * @param stationCode 지하철 역 코드
  * @param currentStationName 현재 역 이름
  * @param prevStationName 이전 역 이름
  * @param nextStationName 다음 역 이름
@@ -45,6 +49,7 @@ data class SubwayArrivalInfo(
  * **/
 data class SubwayArrival(
     val subwayLineId: String,
+    val stationCode: String,
     val currentStationName: String,
     val prevStationName: String,
     val nextStationName: String,

@@ -16,6 +16,7 @@ import com.example.mymanagement.view.compose.ui.transportation.bus.arrival_info.
 import com.example.mymanagement.view.compose.ui.transportation.bus.route.BusStopRouteScreen
 import com.example.mymanagement.view.compose.ui.transportation.subway.SubwaySearchScreen
 import com.example.mymanagement.view.compose.ui.transportation.subway.destination_route.DestinationRouteScreen
+import com.example.mymanagement.view.compose.ui.transportation.subway.schedule.SubwayScheduleScreen
 
 @Composable
 fun NavigationGraph(
@@ -32,7 +33,7 @@ fun NavigationGraph(
             route = BottomNavItems.Home.item.routeWithPostFix
         ) {
             HomeScreen()
-        }
+        } // 홈 화면
         /** 교통 화면 **/
         composable(
             route = BottomNavItems.Transportation.item.routeWithPostFix
@@ -45,19 +46,19 @@ fun NavigationGraph(
                     navController.navigate(NavScreen.SubwaySearch.item.routeWithPostFix)
                 }
             )
-        }
+        } // 교통 화면
         /** 일정 화면 **/
         composable(
             route = BottomNavItems.Schedule.item.routeWithPostFix
         ) {
             ScheduleScreen()
-        }
+        } // 일정 화면
         /** 기타 화면 **/
         composable(
             route = BottomNavItems.Other.item.routeWithPostFix
         ) {
             OtherScreen()
-        }
+        } // 기타 화면
         /** 버스 검색 화면 **/
         composable(
             route = NavScreen.BusStationSearch.item.routeWithPostFix
@@ -75,7 +76,7 @@ fun NavigationGraph(
                 },
                 onBackClick = onBackClick
             )
-        }
+        } //버스 검색 화면
         /** 버스 정류소 도착 정보 화면 **/
         composable(
             route = NavScreen.BusStopArrivalInfo.item.routeWithPostFix,
@@ -106,8 +107,7 @@ fun NavigationGraph(
                     )
                 }
             )
-
-        }
+        } // 버스 정류소 도착 정보 화면
         /** 버스 노선 화면 **/
         composable(
             route = NavScreen.BusStopRoute.item.routeWithPostFix,
@@ -130,7 +130,7 @@ fun NavigationGraph(
                 nodeId = nodeId,
                 onBackClick = onBackClick
             )
-        }
+        } // 버스 노선 화면
         /** 지하철 검색 화면 **/
         composable(
             route = NavScreen.SubwaySearch.item.routeWithPostFix
@@ -147,9 +147,20 @@ fun NavigationGraph(
                             end.stationName
                         )
                     )
+                },
+                goToSchedule = { current, prev, next, code ->
+                    navController.navigate(
+                        makeRouteWithArgs(
+                            NavScreen.SubwaySchedule.item.route,
+                            current,
+                            prev,
+                            next,
+                            code
+                        )
+                    )
                 }
             )
-        }
+        } // 지하철 검색 화면
         /** 지하철 목적지 경로 화면 **/
         composable(
             route = NavScreen.SubwayDestinationRoute.item.routeWithPostFix,
@@ -181,7 +192,29 @@ fun NavigationGraph(
                 onBackClick = onBackClick
             )
 
-        }
+        } // 지하철 목적지 경로 화면
+        /** 지하철 시간표 화면 **/
+        composable(
+            route = NavScreen.SubwaySchedule.item.routeWithPostFix,
+            arguments = listOf(
+                navArgument(NavScreen.SubwaySchedule.CurrentStationName) { type = NavType.StringType },
+                navArgument(NavScreen.SubwaySchedule.PrevStationName) { type = NavType.StringType },
+                navArgument(NavScreen.SubwaySchedule.NextStationName) { type = NavType.StringType },
+                navArgument(NavScreen.SubwaySchedule.StationCode) { type = NavType.StringType },
+            )
+        ) { entry ->
+            entry.arguments?.getString(NavScreen.SubwaySchedule.StationCode) ?: return@composable
+            val current = entry.arguments?.getString(NavScreen.SubwaySchedule.CurrentStationName) ?: return@composable
+            val prev = entry.arguments?.getString(NavScreen.SubwaySchedule.PrevStationName) ?: ""
+            val next = entry.arguments?.getString(NavScreen.SubwaySchedule.NextStationName) ?: ""
+
+            SubwayScheduleScreen(
+                current = current,
+                prev = prev,
+                next = next,
+                onBackClick = onBackClick
+            )
+        } // 지하철 시간표 화면
     }
 
 }

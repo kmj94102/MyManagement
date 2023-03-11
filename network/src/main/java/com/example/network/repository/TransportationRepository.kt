@@ -7,4 +7,16 @@ interface TransportationRepository {
 
     fun fetchFavoriteList(): Flow<List<Favorite>>
 
+    fun fetchFavoriteById(id: String): Flow<Boolean>
+
+    suspend fun toggleSubwayStationStatus(
+        id: String,
+        name: String
+    )
+
+    suspend fun toggleSubwayDestinationStatus(
+        id: String,
+        name: String
+    )
+
 }

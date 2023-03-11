@@ -40,6 +40,7 @@ import com.example.network.model.SubwayArrival
 fun ArrivalInfoContainer(
     list: List<SubwayArrival>,
     onHide: () -> Unit,
+    goToSchedule: (SubwayArrival) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectIndex = remember {
@@ -265,7 +266,7 @@ fun ArrivalInfoContainer(
                     text = "시간표",
                     modifier = Modifier.weight(1f)
                 ) {
-
+                    goToSchedule(list[selectIndex.value])
                 }
             }
         }

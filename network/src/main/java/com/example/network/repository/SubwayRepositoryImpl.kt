@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 class SubwayRepositoryImpl @Inject constructor(
@@ -85,6 +84,7 @@ class SubwayRepositoryImpl @Inject constructor(
         if (result.isEmpty()) throw NoSuchElementException("데이터가 없습니다.")
 
         val currentStation = result[0].stationName
+        val stationCode = getStationIdByCode(result[0].stationId)
 
         items.addAll(
             result
@@ -96,6 +96,7 @@ class SubwayRepositoryImpl @Inject constructor(
                         subwayDao.fetchSubwayName(subwayArrivalInfoList[0].prevStationId)
                     SubwayArrival(
                         subwayLineId = subwayLineId,
+                        stationCode = stationCode,
                         prevStationName = prevStation,
                         nextStationName = nextStation,
                         currentStationName = currentStation,
@@ -158,4 +159,34 @@ class SubwayRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun fetchSubwaySchedule(
+        stationCode: String,
+        week: Int,
+        direction: Int
+    ) = flow {
+        var start = 1
+        val numberOfRow = 100
+        var totalCount: Int? = null
+
+        try {
+            while (totalCount == null || start < totalCount) {
+                val result = client.fetchSubwaySchedule(
+                    start = start,
+                    end = start + numberOfRow - 1,
+                    stationCode = stationCode,
+                    week = week,
+                    direction = direction
+                )
+                totalCount = result.totalCount
+                start += numberOfRow
+                emit(result.row.map { it.toSubwayScheduleInfo() })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(emptyList())
+        }
+    }
+
+    override suspend fun getStationIdByCode(stationId: String): String =
+        subwayDao.fetchSubwayCode(stationId)
 }

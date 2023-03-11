@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 fun SubwaySearchScreen(
     onBackClick: () -> Unit,
     goToDestinationRoute: (StationItem, StationItem) -> Unit,
+    goToSchedule: (String, String, String, String) -> Unit,
     viewModel: SubwaySearchViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState(
@@ -62,6 +63,14 @@ fun SubwaySearchScreen(
                     scope.launch {
                         sheetState.hide()
                     }
+                },
+                goToSchedule = {
+                    goToSchedule(
+                        it.currentStationName,
+                        it.prevStationName,
+                        it.nextStationName,
+                        it.stationCode
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()

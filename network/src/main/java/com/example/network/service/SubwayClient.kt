@@ -28,4 +28,18 @@ class SubwayClient @Inject constructor(
         week = week
     )
 
+    suspend fun fetchSubwaySchedule(
+        start: Int,
+        end: Int,
+        stationCode: String,
+        week: Int,
+        direction: Int
+    ) = service.fetchSubwaySchedule(
+        start = start,
+        end = end,
+        stationCode = stationCode,
+        week = week,
+        direction = direction
+    ).SearchSTNTimeTableByIDService
+
 }
