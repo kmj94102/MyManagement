@@ -56,7 +56,7 @@ fun DestinationRouteScreen(
             routeInfo = routeInfo,
             time = viewModel.time,
             week = viewModel.week.value,
-            isFavorite = true,
+            isFavorite = viewModel.isFavorite.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
@@ -66,6 +66,9 @@ fun DestinationRouteScreen(
             },
             onWeekChange = {
                 viewModel.updateWeek(it)
+            },
+            onFavoriteChange = {
+                viewModel.toggleFavoriteStatus(startStation, endStation)
             }
         )
 
@@ -116,7 +119,8 @@ fun DestinationRouteCard(
     isFavorite: Boolean,
     modifier: Modifier = Modifier,
     onChangeClick: () -> Unit,
-    onWeekChange: (String) -> Unit
+    onWeekChange: (String) -> Unit,
+    onFavoriteChange: () -> Unit
 ) {
     val transparentWhite = White.copy(alpha = .5f)
 
@@ -228,6 +232,7 @@ fun DestinationRouteCard(
             )
 
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(7.dp),
                 modifier = Modifier.constrainAs(weekSelector) {
                     start.linkTo(parent.start, 10.dp)
@@ -273,13 +278,16 @@ fun DestinationRouteCard(
                 )
             }
 
-            Image(
+            Icon(
                 painter = painterResource(id = if (isFavorite) R.drawable.ic_star else R.drawable.ic_star_empty),
                 contentDescription = null,
-                modifier = Modifier.constrainAs(favorite) {
-                    top.linkTo(background.top, 7.dp)
-                    end.linkTo(parent.end, 10.dp)
-                }
+                tint =  if (isFavorite) Color(0xFFFFD36E) else White,
+                modifier = Modifier
+                    .constrainAs(favorite) {
+                        top.linkTo(background.top, 7.dp)
+                        end.linkTo(parent.end, 10.dp)
+                    }
+                    .nonRippleClickable { onFavoriteChange() }
             )
 
             Row(
