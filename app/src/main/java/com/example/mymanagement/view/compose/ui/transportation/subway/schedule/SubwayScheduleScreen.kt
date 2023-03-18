@@ -109,7 +109,7 @@ fun SubwayScheduleScreen(
                 .weight(1f),
             contentPadding = PaddingValues(bottom = 50.dp)
         ) {
-            viewModel.list.forEach {
+            viewModel.scheduleList.forEach {
                 subwayScheduleInfoContainer(hour = it.first, list = it.second)
             }
         }

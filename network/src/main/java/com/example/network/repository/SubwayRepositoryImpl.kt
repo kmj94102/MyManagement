@@ -1,6 +1,7 @@
 package com.example.network.repository
 
 import android.content.Context
+import android.content.res.Resources.NotFoundException
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.SubwayDao
 import com.example.mymanagement.database.entity.FavoriteEntity
@@ -11,9 +12,12 @@ import com.example.network.model.*
 import com.example.network.service.SubwayClient
 import com.example.network.util.priceFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
 
@@ -27,33 +31,33 @@ class SubwayRepositoryImpl @Inject constructor(
 
     override suspend fun fetchStationItems(
         stationName: String,
-        allOrFavorite: List<Int>,
-    ): Flow<List<StationItem>> {
+        isFavoriteOnly: Boolean,
+    ) = flow {
+        val allOrFavorite = if (isFavoriteOnly) listOf(1) else listOf(0, 1)
         if (subwayDao.getNumberOfStations() <= 0) {
+            insertSubwayStation()
+        }
+        subwayDao.fetchStationItems(stationName, allOrFavorite).collect {
+            emit(it)
+        }
+    }
+
+    private suspend fun insertSubwayStation() {
+        try {
             val inputStream = context.resources.openRawResource(R.raw.station_info)
             val reader = BufferedReader(InputStreamReader(inputStream))
             val stationInfoList = mutableListOf<StationEntity>()
             reader.forEachLine {
                 val infoList = it.split(',')
-                stationInfoList.add(
-                    StationEntity(
-                        lineNum = infoList[0],
-                        lineName = infoList[1],
-                        stationId = infoList[2],
-                        stationName = infoList[3].replace("&", ","),
-                        stationCode = infoList[4].padStart(4, '0'),
-                        outerCode = infoList[5]
-                    )
-                )
+                stationInfoList.add(StationEntity.fromCsv(infoList = infoList))
             }
 
             subwayDao.insertSubwayStation(stationInfoList.drop(1))
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: NotFoundException) {
+            e.printStackTrace()
         }
-
-        return subwayDao.fetchStationItems(
-            stationName = stationName,
-            allOrFavorite = allOrFavorite
-        )
     }
 
     override suspend fun fetchStationLineNumbers(): Map<String, Boolean> = try {
@@ -83,34 +87,45 @@ class SubwayRepositoryImpl @Inject constructor(
 
         if (result.isEmpty()) throw NoSuchElementException("데이터가 없습니다.")
 
-        val currentStation = result[0].stationName
-        val stationCode = getStationIdByCode(result[0].stationId)
-
         items.addAll(
             result
                 .groupBy { it.subwayLineId }
                 .map { (subwayLineId, subwayArrivalInfoList) ->
-                    val prevStation =
-                        subwayDao.fetchSubwayName(subwayArrivalInfoList[0].nextStationId)
-                    val nextStation =
-                        subwayDao.fetchSubwayName(subwayArrivalInfoList[0].prevStationId)
-                    SubwayArrival(
+                    createSubwayArrival(
+                        stationName = result[0].stationName,
                         subwayLineId = subwayLineId,
-                        stationCode = stationCode,
-                        prevStationName = prevStation,
-                        nextStationName = nextStation,
-                        currentStationName = currentStation,
-                        arrItemList = subwayArrivalInfoList
-                            .map {
-                                SubwayArrivalItem(
-                                    arrInfo = "${it.destinationName}행 ${it.arrInfo}",
-                                    isUpLine = it.updnLine == "상행" || it.updnLine == "외선"
-                                )
-                            }
+                        subwayArrivalInfoList = subwayArrivalInfoList
                     )
                 }
         )
         emit(items.sortedBy { it.subwayLineId })
+    }
+
+    private suspend fun createSubwayArrival(
+        stationName: String,
+        subwayLineId: String,
+        subwayArrivalInfoList: List<SubwayArrivalInfo>
+    ): SubwayArrival {
+        val stationCode = fetchSubwayCodeById(subwayArrivalInfoList[0].stationId)
+        val prevStation =
+            subwayDao.fetchSubwayNameById(subwayArrivalInfoList[0].nextStationId)
+        val nextStation =
+            subwayDao.fetchSubwayNameById(subwayArrivalInfoList[0].prevStationId)
+
+        return SubwayArrival(
+            subwayLineId = subwayLineId,
+            stationCode = stationCode,
+            prevStationName = prevStation,
+            nextStationName = nextStation,
+            currentStationName = stationName,
+            arrItemList = subwayArrivalInfoList
+                .map {
+                    SubwayArrivalItem(
+                        arrInfo = "${it.destinationName}행 ${it.arrInfo}",
+                        isUpLine = it.updnLine == "상행" || it.updnLine == "외선"
+                    )
+                }
+        )
     }
 
     override fun fetchSubwayRoute(
@@ -187,6 +202,6 @@ class SubwayRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStationIdByCode(stationId: String): String =
-        subwayDao.fetchSubwayCode(stationId)
+    private suspend fun fetchSubwayCodeById(stationId: String): String =
+        subwayDao.fetchSubwayCodeById(stationId)
 }

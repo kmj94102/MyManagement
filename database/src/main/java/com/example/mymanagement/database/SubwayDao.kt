@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubwayDao {
 
+    /** 지하철 역 정보 추가 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubwayStation(list: List<StationEntity>)
 
+    /** 등록된 지하철 역 개수 **/
     @Query("SELECT COUNT(*) FROM StationEntity")
     suspend fun getNumberOfStations(): Int
 
@@ -26,17 +28,20 @@ interface SubwayDao {
             "GROUP BY stationName\n" +
             "ORDER BY isFavorite DESC, stationName ASC")
     fun fetchStationItems(
-        stationName: String = "%%",
+        stationName: String = "",
         allOrFavorite: List<Int>,
     ): Flow<List<StationItem>>
 
+    /** 지하철 호선 종류 조회 **/
     @Query("SELECT lineNum FROM StationEntity GROUP BY lineNum")
     suspend fun fetchStationLineNumbers(): List<String>
 
+    /** stationId로 지하철 역 이름 조회 **/
     @Query("SELECT stationName FROM StationEntity WHERE stationId = :stationId")
-    suspend fun fetchSubwayName(stationId: String): String
+    suspend fun fetchSubwayNameById(stationId: String): String
 
+    /** stationId로 stationCode 조회 **/
     @Query("SELECT stationCode FROM StationEntity WHERE stationId = :stationId")
-    suspend fun fetchSubwayCode(stationId: String): String
+    suspend fun fetchSubwayCodeById(stationId: String): String
 
 }

@@ -21,46 +21,43 @@ class SubwayScheduleViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // 역 코드
     private val stationCode: String = savedStateHandle[NavScreen.SubwaySchedule.StationCode] ?: ""
+    // 역 이름
     private val stationName: String = savedStateHandle[NavScreen.SubwaySchedule.CurrentStationName] ?: ""
-
+    // 선택한 주간 정보
     private val _week = mutableStateOf(WeekDay)
     val week: State<Int> = _week
-
+    // 즐겨찾기 여부
     val isFavorite = transportationRepository.fetchFavoriteById(stationCode)
-
+    // 원본 리스트
     private val originList = mutableStateListOf<SubwayScheduleInfo>()
-    val list: List<Pair<String, List<SubwayScheduleInfo>>>
+    // 지하철 시간표 리스트
+    val scheduleList: List<Pair<String, List<SubwayScheduleInfo>>>
         get() {
             return originList
                 .sortedWith(compareBy({ info -> info.hour }, { info -> info.minute }))
                 .groupBy { it.hour }
                 .toList()
-                .sortedBy { it.first }
         }
 
     init {
-        fetchSchedule()
+        fetchSubwaySchedules()
     }
 
-    private fun fetchSchedule() = viewModelScope.launch {
+    /** 시간표 조회 **/
+    private fun fetchSubwaySchedules() = viewModelScope.launch {
         originList.clear()
-        repository.fetchSubwaySchedule(
-            stationCode = stationCode,
-            week = _week.value,
-            direction = 1
-        ).collect {
-            originList.addAll(it)
-            originList.sortedWith(compareBy({ info -> info.hour }, { info -> info.minute }))
-        }
+        fetchSubwaySchedule(1)
+        fetchSubwaySchedule(2)
+    }
 
-        repository.fetchSubwaySchedule(
-            stationCode = stationCode,
-            week = _week.value,
-            direction = 2
-        ).collect {
-            originList.addAll(it)
-        }
+    private suspend fun fetchSubwaySchedule(direction: Int) = repository.fetchSubwaySchedule(
+        stationCode = stationCode,
+        week = _week.value,
+        direction = direction
+    ).collect {
+        originList.addAll(it)
     }
 
     fun toggleSubwayStationStatus() = viewModelScope.launch {
@@ -72,7 +69,7 @@ class SubwayScheduleViewModel @Inject constructor(
 
     fun changeWeek(week: Int) {
         _week.value = week
-        fetchSchedule()
+        fetchSubwaySchedules()
     }
 
     companion object {

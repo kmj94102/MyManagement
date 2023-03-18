@@ -8,10 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface SubwayRepository {
 
-    /** 지하철 역 정보 조회 **/
+    /**
+     * 지하철 역 정보 조회
+     * @param stationName 지하철역 이름
+     * @param isFavoriteOnly 즐겨찾기만 표시 여부
+     * **/
     suspend fun fetchStationItems(
         stationName: String,
-        allOrFavorite: List<Int>,
+        isFavoriteOnly: Boolean,
     ): Flow<List<StationItem>>
 
     /** 지하철 노선 종류 조회 **/
@@ -23,7 +27,13 @@ interface SubwayRepository {
     /** 지하철역 실시간 도착 정보 **/
     fun fetchRealtimeStationArrivals(keyword: String): Flow<List<SubwayArrival>>
 
-    /** 지하철 경로 조회 **/
+    /**
+     * 지하철 경로 조회
+     * @param searchTime 조회하려는 시간
+     * @param startStationCode 출발지 역 코드
+     * @param endStationCode 목적지 역 코드
+     * @param week 평일(DAY) / 토요일(SAT) / 공휴일(HOL)
+     * **/
     fun fetchSubwayRoute(
         searchTime: String,
         startStationCode: String,
@@ -37,8 +47,5 @@ interface SubwayRepository {
         week: Int,
         direction: Int
     ): Flow<List<SubwayScheduleInfo>>
-
-    /** 지하철 코드 조회 **/
-    suspend fun getStationIdByCode(stationId: String): String
 
 }

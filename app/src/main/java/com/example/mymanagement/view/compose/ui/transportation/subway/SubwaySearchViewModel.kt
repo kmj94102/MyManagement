@@ -20,31 +20,36 @@ class SubwaySearchViewModel @Inject constructor(
     private val repository: SubwayRepository,
 ) : ViewModel() {
 
-    private val _isNeedUpdate = mutableStateOf(false)
-    val isNeedUpdate: State<Boolean> = _isNeedUpdate
-
     private val _isProgress = mutableStateOf(false)
     val isProgress: State<Boolean> = _isProgress
 
-    private var allOrFavorite = listOf(0, 1)
+    // 즐겨찾기만 표시 여부
+    private var isFavoriteOnly = false
+
+    // 검색할 역 이름
     private var stationName = ""
 
     private val _lineNumbersMap = mutableStateMapOf<String, Boolean>()
     val lineNumbersMap: Map<String, Boolean> = _lineNumbersMap
 
+    // 목적지
     private val _departure = mutableStateOf<StationItem?>(null)
     val departure: State<StationItem?> = _departure
 
+    // 출발지
     private val _arrival = mutableStateOf<StationItem?>(null)
     val arrival: State<StationItem?> = _arrival
 
+    // 지하철 역 리스트
     private val stationItemsSharedFlow = MutableSharedFlow<String>(replay = 1)
-    val stationItems = stationItemsSharedFlow.flatMapLatest {
-        repository.fetchStationItems(
-            stationName = it,
-            allOrFavorite = allOrFavorite
-        )
-    }.onStart { _isProgress.value = true }
+    val stationItems = stationItemsSharedFlow
+        .flatMapLatest {
+            repository.fetchStationItems(
+                stationName = it,
+                isFavoriteOnly = isFavoriteOnly
+            )
+        }
+        .onStart { _isProgress.value = true }
         .onCompletion { _isProgress.value = false }
         .retryWhen { cause, attempt ->
             // 재시도 여부를 결정하는 함수
@@ -56,8 +61,9 @@ class SubwaySearchViewModel @Inject constructor(
         }
         .catch { it.printStackTrace() }
 
-    private val _arrivalInfoMap = MutableStateFlow<List<SubwayArrival>>(listOf())
-    val arrivalInfoMap: Flow<List<SubwayArrival>> = _arrivalInfoMap
+    // 실시간 도착 정보 리스트
+    private val _arrivalInfoList = MutableStateFlow<List<SubwayArrival>>(listOf())
+    val arrivalInfoList: Flow<List<SubwayArrival>> = _arrivalInfoList
 
     init {
         searchStations()
@@ -81,7 +87,7 @@ class SubwaySearchViewModel @Inject constructor(
 
     /** 즐겨 찾기만 조회 **/
     fun searchStationsAllOrFavorite(isFavorite: Boolean) {
-        allOrFavorite = if (isFavorite) listOf(1) else listOf(0, 1)
+        isFavoriteOnly = isFavorite
         searchStations()
     }
 
@@ -97,25 +103,27 @@ class SubwaySearchViewModel @Inject constructor(
     /** 지하철 도착 정보 조회 **/
     fun fetchRealtimeStationArrivals(
         stationName: String
-    )  {
+    ) {
         repository
             .fetchRealtimeStationArrivals(stationName)
             .onStart { _isProgress.value = true }
-            .onEach { _arrivalInfoMap.value = it }
+            .onEach { _arrivalInfoList.value = it }
             .onCompletion { _isProgress.value = false }
             .catch {
-                _arrivalInfoMap.value = emptyList()
+                _arrivalInfoList.value = emptyList()
                 it.printStackTrace()
             }
             .launchIn(viewModelScope)
     }
 
+    /** 출발지, 목적지 바꾸기 **/
     fun swapDepartureAndArrival() {
         val temp = Pair(_arrival.value, _departure.value)
         _arrival.value = temp.second
         _departure.value = temp.first
     }
 
+    /** 목적지 설정 **/
     fun setDeparture(departure: StationItem) {
         _departure.value = departure
         if (_arrival.value == departure) {
@@ -123,6 +131,7 @@ class SubwaySearchViewModel @Inject constructor(
         }
     }
 
+    /** 출발지 설정 **/
     fun setArrival(arrival: StationItem) {
         _arrival.value = arrival
         if (_departure.value == arrival) {

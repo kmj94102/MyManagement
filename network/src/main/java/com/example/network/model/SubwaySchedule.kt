@@ -46,6 +46,13 @@ data class SubwaySchedule(
     }
 }
 
+/**
+ * 지하철 시간표 정보
+ * @param hour 시간
+ * @param minute 분
+ * @param name 기점 > 종점
+ * @param isUpLine 상행 여부
+ * **/
 data class SubwayScheduleInfo(
     val hour: String,
     val minute: String,

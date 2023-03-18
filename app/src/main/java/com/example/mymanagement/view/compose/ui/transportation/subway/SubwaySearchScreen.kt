@@ -50,7 +50,7 @@ fun SubwaySearchScreen(
     val scope = rememberCoroutineScope()
 
     val stations = viewModel.stationItems.collectAsState(initial = emptyList()).value
-    val arrivalInfoList = viewModel.arrivalInfoMap.collectAsState(initial = listOf()).value
+    val arrivalInfoList = viewModel.arrivalInfoList.collectAsState(initial = listOf()).value
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
