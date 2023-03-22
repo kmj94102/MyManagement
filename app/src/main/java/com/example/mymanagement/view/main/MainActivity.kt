@@ -6,6 +6,7 @@ import com.example.mymanagement.databinding.ActivityMainBinding
 import com.example.mymanagement.view.base.BindingActivity
 import com.example.mymanagement.view.compose.ComposeMainActivity
 import com.example.mymanagement.util.startActivity
+import com.example.mymanagement.view.xml.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,10 +21,11 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         }
 
         binding.btnXml.setOnClickListener {
-
+            startActivity(HomeActivity::class.java)
+            finish()
         }
 
-        binding.btnCompose.performClick()
+        binding.btnXml.performClick()
 
     }
 }
