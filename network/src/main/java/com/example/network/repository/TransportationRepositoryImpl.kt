@@ -1,15 +1,15 @@
 package com.example.network.repository
 
+import android.util.Log
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.entity.Favorite
 import com.example.mymanagement.database.entity.FavoriteEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class TransportationRepositoryImpl @Inject constructor(
     private val dao: FavoriteDao
-): TransportationRepository {
+) : TransportationRepository {
 
     override fun fetchFavoriteList(): Flow<List<Favorite>> =
         dao.fetchFavoriteList().map { it.map { entity -> entity.toFavorite() } }

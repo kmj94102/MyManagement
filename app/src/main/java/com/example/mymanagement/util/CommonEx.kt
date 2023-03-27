@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.naver.maps.geometry.LatLng
+import kotlin.math.roundToInt
 
 fun <T> Activity.startActivity(clazz: Class<T>) {
     startActivity(Intent(this, clazz))
@@ -37,3 +38,13 @@ fun <T> Activity.createIntent(clazz: Class<T>, vararg flags : Int) =
     }
 
 fun getSeoulLatLng() = LatLng(37.5527752,126.96857219999998)
+
+fun dpToPx(context: Context?, dp: Int): Int {
+    val density = context?.resources?.displayMetrics?.density ?: 1.0f
+    return (dp.toFloat() * density).roundToInt()
+}
+
+fun spToPx(context: Context?, sp: Int): Float {
+    val density = context?.resources?.displayMetrics?.scaledDensity ?: 1.0f
+    return sp * density
+}

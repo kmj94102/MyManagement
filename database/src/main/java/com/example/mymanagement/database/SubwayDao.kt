@@ -32,6 +32,18 @@ interface SubwayDao {
         allOrFavorite: List<Int>,
     ): Flow<List<StationItem>>
 
+    @Query("SELECT stationCode, stationId, stationName, group_concat(lineNum,  ',') lineNames, CASE WHEN Favorite.id IS NULL THEN 0 ELSE 1 END AS isFavorite\n" +
+            "FROM StationEntity as Station\n" +
+            "LEFT JOIN FavoriteEntity as Favorite\n" +
+            "ON Station.stationCode = Favorite.id\n" +
+            "WHERE stationName LIKE '%' || :stationName || '%' AND isFavorite IN (:allOrFavorite)\n" +
+            "GROUP BY stationName\n" +
+            "ORDER BY isFavorite DESC, stationName ASC")
+    fun fetchStationItems2(
+        stationName: String = "",
+        allOrFavorite: List<Int>,
+    ): List<StationItem>
+
     /** 지하철 호선 종류 조회 **/
     @Query("SELECT lineNum FROM StationEntity GROUP BY lineNum")
     suspend fun fetchStationLineNumbers(): List<String>

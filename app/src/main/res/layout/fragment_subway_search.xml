@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="topTitle"
+            type="String" />
+
+        <variable
+            name="fragment"
+            type="com.example.mymanagement.view.base.BaseViewModelFragment" />
+
+        <variable
+            name="adapter"
+            type="com.example.mymanagement.view.xml.ui.transportation.subway.SubwaySearchAdapter" />
+
+        <variable
+            name="vm"
+            type="com.example.mymanagement.view.xml.ui.transportation.subway.SubwaySearchViewModel2" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".view.xml.ui.home.HomeFragment">
+
+        <include
+            android:id="@+id/title"
+            layout="@layout/layout_title_bar"
+            app:title="@{topTitle}"
+            app:fragment="@{fragment}"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardDestinationRoute"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:isVisible="@{vm.stationStation != null || vm.endStation != null}"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_goneMarginTop="0dp"
+            app:strokeColor="@color/green"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="@id/txtStart"
+                    app:layout_constraintStart_toStartOf="@id/txtStart"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/green"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/green"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="@id/txtEnd"
+                    app:layout_constraintStart_toStartOf="@id/txtEnd"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/txtStart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@{vm.stationStation.stationName}"
+                    app:layout_constraintBottom_toBottomOf="@id/btnChange"
+                    app:layout_constraintEnd_toStartOf="@id/btnChange"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnChange"
+                    tools:text="의정부" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnChange"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="26dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toStartOf="@id/viewNext"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/green"
+                    app:strokeWidth="1dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_change"
+                        app:tint="@color/green" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/txtEnd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@{vm.endStation.stationName}"
+                    app:layout_constraintBottom_toBottomOf="@id/btnChange"
+                    app:layout_constraintEnd_toStartOf="@id/viewNext"
+                    app:layout_constraintStart_toEndOf="@id/btnChange"
+                    app:layout_constraintTop_toTopOf="@id/btnChange"
+                    tools:text="종로3가" />
+
+                <View
+                    android:id="@+id/viewNext"
+                    android:layout_width="44dp"
+                    android:layout_height="63dp"
+                    android:background="@{vm.stationStation != null &amp;&amp; viewModel.endStation != null ? @color/green : @color/gray, default = @color/gray}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_next"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/viewNext"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:adapter="@{adapter}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/layoutFooter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardDestinationRoute"
+            app:submitList="@{vm.stationList}"
+            tools:listitem="@layout/item_subway" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutFooter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_top_round20"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.example.mymanagement.view.xml.ui.custom.SearchEditTextView
+                android:id="@+id/editSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="27dp"
+                android:textCursorDrawable="@drawable/bg_cursor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:text="즐겨 찾기만"
+                android:buttonTint="@color/green"
+                app:layout_constraintTop_toBottomOf="@id/editSearch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,5 +1,7 @@
 package com.example.mymanagement.database.entity
 
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -13,9 +15,11 @@ import androidx.room.PrimaryKey
  * @param id 서버 조회를 위한 아이디
  * @param timeStamp 등록 시간
  * **/
-@Entity(indices = [
-    Index(unique = true, value = ["id", "name"])
-])
+@Entity(
+    indices = [
+        Index(unique = true, value = ["id", "name"])
+    ]
+)
 data class FavoriteEntity(
     @PrimaryKey(autoGenerate = true) val index: Int,
     val type: String,

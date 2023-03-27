@@ -2,6 +2,7 @@ package com.example.network.repository
 
 import android.content.Context
 import android.content.res.Resources.NotFoundException
+import android.util.Log
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.SubwayDao
 import com.example.mymanagement.database.entity.FavoriteEntity
@@ -12,10 +13,9 @@ import com.example.network.model.*
 import com.example.network.service.SubwayClient
 import com.example.network.util.priceFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

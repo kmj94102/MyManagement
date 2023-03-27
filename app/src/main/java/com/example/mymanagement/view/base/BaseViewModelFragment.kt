@@ -26,11 +26,15 @@ abstract class BaseViewModelFragment<B : ViewDataBinding, VM : ViewModel>(
         binding = DataBindingUtil.inflate(layoutInflater, layoutId, container, false)
 
         with(binding) {
-            lifecycleOwner = this@BaseViewModelFragment
-            setVariable(com.example.mymanagement.BR._all, viewModel)
+            lifecycleOwner = viewLifecycleOwner
+            setVariable(com.example.mymanagement.BR.vm, viewModel)
         }
 
         return binding.root
+    }
+
+    open fun onBackPress() {
+        requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
 }
