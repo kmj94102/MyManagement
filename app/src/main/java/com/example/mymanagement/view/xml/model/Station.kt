@@ -11,6 +11,14 @@ data class Station(
     var isStartSelect: Boolean,
     var isEndSelect: Boolean
 ) {
+    fun toStationItem() = StationItem(
+        stationCode = stationCode,
+        stationId = stationId,
+        stationName = stationName,
+        lineNames = lineList.reduce { acc, s -> "$acc,$s" },
+        isFavorite = isFavorite
+    )
+
     companion object {
         private fun fromStationItem(stationItem: StationItem) = Station(
             stationCode = stationItem.stationCode,

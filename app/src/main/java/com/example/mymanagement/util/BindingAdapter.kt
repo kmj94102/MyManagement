@@ -25,7 +25,6 @@ object BindingAdapter {
     @JvmStatic
     @androidx.databinding.BindingAdapter("submitList")
     fun bindSubmitList(view: RecyclerView, itemList: List<Any>?) {
-        Log.e("+++++bindSubmitList", "${itemList?.size}")
         (view.adapter as? ListAdapter<Any, *>)?.submitList(itemList)
     }
 

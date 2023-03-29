@@ -11,6 +11,8 @@ import com.example.mymanagement.view.xml.model.Station
 class SubwaySearchAdapter(
     val startChangeListener: (Station?) -> Unit,
     val endChangeListener: (Station?) -> Unit,
+    val onStationClick: (Station) -> Unit,
+    val onFavoriteClick: (Station) -> Unit
 ): ListAdapter<Station, SubwaySearchAdapter.ViewHolder>(diffUtil) {
     private var startIndex = -1
     private var endIndex = -1

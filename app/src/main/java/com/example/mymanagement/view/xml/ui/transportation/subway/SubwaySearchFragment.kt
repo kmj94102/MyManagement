@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.example.mymanagement.R
 import com.example.mymanagement.databinding.FragmentSubwaySearchBinding
 import com.example.mymanagement.view.base.BaseViewModelFragment
+import com.example.mymanagement.view.xml.ui.transportation.subway.arrival_info.BottomSheetArrivalInfo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,7 +18,7 @@ class SubwaySearchFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        with(binding) {
             topTitle = "지하철 검색"
             vm = this@SubwaySearchFragment.viewModel
             fragment = this@SubwaySearchFragment
@@ -28,6 +29,12 @@ class SubwaySearchFragment :
                 },
                 endChangeListener = {
                     viewModel.endChangeListener(it)
+                },
+                onFavoriteClick = {
+                    viewModel.toggleFavorite(it)
+                },
+                onStationClick = {
+                    BottomSheetArrivalInfo(it.stationName).show(requireActivity().supportFragmentManager, null)
                 }
             )
             editSearch.setSearchListener {

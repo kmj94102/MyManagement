@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MyManagement</string>
     <string name="title_activity_compose_main">ComposeMainActivity</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_arrival_info"><![CDATA[%1$s <font color="#FFF7A4A4">%2$s</font>]]></string>
 </resources>

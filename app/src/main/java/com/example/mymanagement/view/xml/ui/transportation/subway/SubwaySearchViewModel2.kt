@@ -7,6 +7,7 @@ import com.example.mymanagement.view.xml.model.Station
 import com.example.network.repository.SubwayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +49,10 @@ class SubwaySearchViewModel2 @Inject constructor(
 
     fun endChangeListener(station: Station?) {
         _endStation.value = station
+    }
+
+    fun toggleFavorite(station: Station) = viewModelScope.launch {
+        subwayRepository.updateFavorite(station.toStationItem())
     }
 
 }

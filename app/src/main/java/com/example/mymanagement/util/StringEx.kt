@@ -23,3 +23,5 @@ fun getToday(format: String = "HHmmss"): String {
 
     return formatter.format(today)
 }
+
+fun Long.toHexString(): String = java.lang.Long.toHexString(this)

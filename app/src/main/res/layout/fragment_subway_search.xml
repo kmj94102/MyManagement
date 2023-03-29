@@ -136,7 +136,7 @@
                     android:id="@+id/viewNext"
                     android:layout_width="44dp"
                     android:layout_height="63dp"
-                    android:background="@{vm.stationStation != null &amp;&amp; viewModel.endStation != null ? @color/green : @color/gray, default = @color/gray}"
+                    android:background="@{vm.stationStation != null &amp;&amp; vm.endStation != null ? @color/green : @color/gray, default = @color/gray}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
