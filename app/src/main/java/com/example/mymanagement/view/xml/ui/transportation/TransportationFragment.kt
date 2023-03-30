@@ -37,11 +37,19 @@ class TransportationFragment :
                     null
                 )
             )
-            recyclerView.addItemDecoration(GridSpacingItemDecoration(
-                spanCount = 2,
-                verticalSpacing = dpToPx(context, 10),
-                horizontalSpacing = dpToPx(context, 16),
-                includeEdge = false)
+            layoutBus.setOnClickListener(
+                Navigation.createNavigateOnClickListener(
+                    R.id.busSearchFragment,
+                    null
+                )
+            )
+            recyclerView.addItemDecoration(
+                GridSpacingItemDecoration(
+                    spanCount = 2,
+                    verticalSpacing = dpToPx(context, 10),
+                    horizontalSpacing = dpToPx(context, 16),
+                    includeEdge = false
+                )
             )
         }
     }

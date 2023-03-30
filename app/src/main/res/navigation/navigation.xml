@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_transportationFragment_to_subwayScheduleFragment"
             app:destination="@id/subwayScheduleFragment" />
+        <action
+            android:id="@+id/action_transportationFragment_to_busSearchFragment"
+            app:destination="@id/busSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/scheduleFragment"
@@ -34,4 +37,9 @@
         android:name="com.example.mymanagement.view.xml.ui.transportation.subway.SubwaySearchFragment"
         android:label="SubwaySearchFragment"
         tools:layout="@layout/fragment_subway_search"/>
+    <fragment
+        android:id="@+id/busSearchFragment"
+        android:name="com.example.mymanagement.view.xml.ui.transportation.bus.BusSearchFragment"
+        android:label="BusSearchFragment"
+        tools:layout="@layout/fragment_bus_search"/>
 </navigation>

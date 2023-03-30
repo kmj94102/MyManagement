@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import com.example.mymanagement.R
+import com.example.mymanagement.util.hideKeyBoard
 
 class SearchEditTextView : CustomEditTextView {
 
@@ -55,6 +56,7 @@ class SearchEditTextView : CustomEditTextView {
         setOnEditorActionListener { _, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 listener.invoke(text.toString())
+                hideKeyBoard()
                 true
             } else {
                 false
@@ -63,8 +65,9 @@ class SearchEditTextView : CustomEditTextView {
 
         setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
-                if (motionEvent.rawX >= (right - compoundDrawables[0].bounds.width())) {
+                if (motionEvent.rawX <= (left + compoundDrawables[0].bounds.width())) {
                     listener(text.toString())
+                    hideKeyBoard()
                     return@setOnTouchListener true
                 }
             }
