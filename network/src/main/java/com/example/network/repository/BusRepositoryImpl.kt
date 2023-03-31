@@ -40,7 +40,7 @@ class BusRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun isFavoriteStation(nodeId: String): Flow<Boolean> =
+    override fun isFavoriteBusStop(nodeId: String): Flow<Boolean> =
         favoriteDao.fetchFavoriteById(nodeId)
 
     override suspend fun toggleBusStopFavoriteStatus(name: String, nodeId: String) {

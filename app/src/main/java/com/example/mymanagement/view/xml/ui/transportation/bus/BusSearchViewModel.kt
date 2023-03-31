@@ -15,7 +15,6 @@ class BusSearchViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _cameraLatLng = MutableStateFlow(LatLng(37.5547125,26.9707878))
-    private val _latLng = MutableStateFlow(LatLng(37.5547125,26.9707878))
 
     private val sharedFlow: MutableSharedFlow<String> = MutableSharedFlow(replay = 1)
     val busStopList = sharedFlow.flatMapLatest {

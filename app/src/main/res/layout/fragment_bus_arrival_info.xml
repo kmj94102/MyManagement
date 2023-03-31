@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.example.mymanagement.view.base.BaseViewModelFragment" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="vm"
+            type="com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info.BusArrivalInfoViewModel" />
+
+        <variable
+            name="adapter"
+            type="com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info.BusArrivalInfoAdapter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/layoutHeader"
+            layout="@layout/layout_title_bar"
+            app:fragment="@{fragment}"
+            app:title="@{title}"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <ImageView
+            android:id="@+id/imgBusStopFavorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="10dp"
+            android:elevation="10dp"
+            android:onClick="@{() -> vm.toggleBusStopFavoriteStatus(title)}"
+            android:src="@{vm.isFavoriteBusStop() ? @drawable/ic_star : @drawable/ic_star_empty}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_star" />
+
+        <ImageView
+            android:id="@+id/imgRefresh"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="10dp"
+            android:elevation="10dp"
+            android:onClick="@{() -> vm.fetchEstimatedArrivalInfoList()}"
+            android:src="@drawable/ic_refresh"
+            app:layout_constraintEnd_toStartOf="@id/imgBusStopFavorite"
+            app:layout_constraintTop_toTopOf="@id/imgBusStopFavorite" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="34dp"
+            app:cardBackgroundColor="@color/blue"
+            app:cardCornerRadius="20dp"
+            app:isVisible="@{vm.arrivalInfoList.size() == 1}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+            app:strokeColor="@color/blue"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtBusNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1234" />
+
+                <ImageView
+                    android:id="@+id/imgFavorite"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="20dp"
+                    tools:src="@drawable/ic_star"
+                    app:layout_constraintBottom_toBottomOf="@id/txtBusNumber"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/txtBusNumber" />
+
+                <View
+                    android:id="@+id/viewBg"
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtBusNumber" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="wrap_content"
+                    android:layout_height="130dp"
+                    app:layout_constraintBottom_toBottomOf="@id/viewBg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/viewBg"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/bus" />
+
+                <TextView
+                    android:id="@+id/txtFirstArrivalInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/txtSecondArrivalInfo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/viewBg"
+                    app:layout_goneMarginBottom="15dp"
+                    tools:text="1분 10초 (1 정류장 전)" />
+
+                <TextView
+                    android:id="@+id/txtSecondArrivalInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtFirstArrivalInfo"
+                    tools:text="1분 10초 (1 정류장 전)" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="0dp"
+            android:text="노선 보기"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:isVisible="@{vm.arrivalInfoList.size() == 1}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:clipToPadding="false"
+            android:paddingTop="25dp"
+            android:paddingBottom="50dp"
+            app:isVisible="@{vm.arrivalInfoList.size() >= 2}"
+            app:adapter="@{adapter}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+            app:submitList="@{vm.arrivalInfoList}"
+            tools:listitem="@layout/item_bus_arrival_info" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:isVisible="@{vm.arrivalInfoList.empty}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/empty" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="정류소의 도착시간을 찾을 수 없어요."
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:isVisible="@{vm.arrivalInfoList.empty}"
+            app:layout_constraintBottom_toBottomOf="@id/lottieEmpty"
+            app:layout_constraintEnd_toEndOf="@id/lottieEmpty"
+            app:layout_constraintStart_toStartOf="@id/lottieEmpty" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

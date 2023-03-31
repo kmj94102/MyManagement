@@ -41,5 +41,15 @@
         android:id="@+id/busSearchFragment"
         android:name="com.example.mymanagement.view.xml.ui.transportation.bus.BusSearchFragment"
         android:label="BusSearchFragment"
-        tools:layout="@layout/fragment_bus_search"/>
+        tools:layout="@layout/fragment_bus_search">
+        <action
+            android:id="@+id/action_busSearchFragment_to_busArrivalInfo"
+            app:destination="@id/busArrivalInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/busArrivalInfo"
+        android:name="com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info.BusArrivalInfoFragment"
+        android:label="BusArrivalFragment"
+        tools:layout="@layout/fragment_bus_arrival_info">
+    </fragment>
 </navigation>

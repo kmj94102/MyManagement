@@ -7,12 +7,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.mymanagement.BuildConfig
 import com.example.mymanagement.R
 import com.example.mymanagement.databinding.FragmentBusSearchBinding
 import com.example.mymanagement.view.base.BaseViewModelFragment
+import com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info.BusArrivalInfoFragment
 import com.example.network.model.BusStop
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
@@ -123,6 +126,15 @@ class BusSearchFragment :
                 it.map = naverMap
                 it.captionText = item.nodeNm
                 it.setOnClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_busSearchFragment_to_busArrivalInfo,
+                            bundleOf(
+                                BusArrivalInfoFragment.CityCode to item.cityCode,
+                                BusArrivalInfoFragment.NodeId to item.nodeId,
+                                BusArrivalInfoFragment.NodeName to item.nodeNm
+                            )
+                        )
                     true
                 }
             }

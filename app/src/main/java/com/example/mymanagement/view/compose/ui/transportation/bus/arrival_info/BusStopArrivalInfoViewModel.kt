@@ -57,7 +57,7 @@ class BusStopArrivalInfoViewModel @Inject constructor(
 
     /** 버스 정류장 즐겨찾기 상태 조회 **/
     private fun fetchStationFavoriteStatus() {
-        repository.isFavoriteStation(nodeId)
+        repository.isFavoriteBusStop(nodeId)
             .onEach { _isFavoriteStation.value = it }
             .catch { it.printStackTrace() }
             .launchIn(viewModelScope)
