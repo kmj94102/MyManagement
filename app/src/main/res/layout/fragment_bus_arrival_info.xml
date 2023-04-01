@@ -30,9 +30,7 @@
             android:id="@+id/layoutHeader"
             layout="@layout/layout_title_bar"
             app:fragment="@{fragment}"
-            app:title="@{title}"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+            app:title="@{title}"/>
 
         <ImageView
             android:id="@+id/imgBusStopFavorite"
@@ -155,6 +153,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <Button
+            android:id="@+id/btnRoute"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"

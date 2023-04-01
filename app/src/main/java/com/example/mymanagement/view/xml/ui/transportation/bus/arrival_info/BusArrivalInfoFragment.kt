@@ -2,12 +2,15 @@ package com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.mymanagement.R
 import com.example.mymanagement.databinding.FragmentBusArrivalInfoBinding
 import com.example.mymanagement.view.base.BaseViewModelFragment
+import com.example.mymanagement.view.xml.ui.transportation.bus.route.BusRouteFragment
 import com.example.network.model.BusEstimatedArrivalInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,9 +36,14 @@ class BusArrivalInfoFragment :
         with(binding) {
             fragment = this@BusArrivalInfoFragment
             title = nodeName
-            adapter = BusArrivalInfoAdapter {
-                viewModel.toggleBusFavoriteStatus(it)
-            }
+            adapter = BusArrivalInfoAdapter(
+                onFavoriteClick = {
+                    viewModel.toggleBusFavoriteStatus(it)
+                },
+                onRouteClick = {
+                    goToRoute(it)
+                }
+            )
         }
 
         lifecycleScope.launch {
@@ -55,6 +63,7 @@ class BusArrivalInfoFragment :
         imgFavorite.setOnClickListener {
             viewModel.toggleBusFavoriteStatus(info)
         }
+        btnRoute.setOnClickListener { goToRoute(info) }
 
         if (info.arrInfo.size == 1) {
             txtFirstArrivalInfo.text = info.arrInfo[0]
@@ -64,6 +73,18 @@ class BusArrivalInfoFragment :
             txtSecondArrivalInfo.text = info.arrInfo[1]
             txtSecondArrivalInfo.isVisible = true
         }
+    }
+
+    private fun goToRoute(info: BusEstimatedArrivalInfo) {
+        findNavController().navigate(
+            R.id.action_busArrivalInfo_to_busRoute,
+            bundleOf(
+                BusRouteFragment.NodeName to info.nodeName,
+                BusRouteFragment.CityCode to cityCode,
+                BusRouteFragment.RouteId to info.routeId,
+                BusRouteFragment.BusNumber to info.busNumber
+            )
+        )
     }
 
     companion object {

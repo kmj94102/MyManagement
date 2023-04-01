@@ -9,7 +9,8 @@ import com.example.mymanagement.databinding.ItemBusArrivalInfoBinding
 import com.example.network.model.BusEstimatedArrivalInfo
 
 class BusArrivalInfoAdapter(
-    val onFavoriteClick: (BusEstimatedArrivalInfo) -> Unit
+    val onFavoriteClick: (BusEstimatedArrivalInfo) -> Unit,
+    val onRouteClick: (BusEstimatedArrivalInfo) -> Unit
 ) : ListAdapter<BusEstimatedArrivalInfo, BusArrivalInfoAdapter.ViewHolder>(diffUtil) {
 
     inner class ViewHolder(val binding: ItemBusArrivalInfoBinding) :
@@ -22,6 +23,9 @@ class BusArrivalInfoAdapter(
             }
             imgFavorite.setOnClickListener {
                 onFavoriteClick(arrivalInfo)
+            }
+            imgRoute.setOnClickListener {
+                onRouteClick(arrivalInfo)
             }
         }
     }

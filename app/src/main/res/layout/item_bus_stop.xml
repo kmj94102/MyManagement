@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="busStop"
+            type="com.example.network.model.BusStopRouteItem" />
+
+        <variable
+            name="isCurrentStation"
+            type="Boolean" />
+
+        <variable
+            name="isLastStation"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardCircle"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="20dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/imgFavorite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imgFavorite"
+            app:strokeColor="@{isCurrentStation ? @color/green : @color/gray, default = @color/gray}"
+            app:strokeWidth="1dp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="22dp"
+            android:background="@color/gray"
+            app:isVisible="@{!isLastStation}"
+            app:layout_constraintEnd_toEndOf="@id/cardCircle"
+            app:layout_constraintStart_toStartOf="@id/cardCircle"
+            app:layout_constraintTop_toBottomOf="@id/cardCircle" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:ellipsize="end"
+            android:text="@{@string/bus_route(busStop.nodeName, busStop.nodeNumber)}"
+            android:textColor="@{isCurrentStation ? @color/green : @color/black, default = @color/black}"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/cardCircle"
+            app:layout_constraintEnd_toStartOf="@id/imgFavorite"
+            app:layout_constraintStart_toEndOf="@id/cardCircle"
+            app:layout_constraintTop_toTopOf="@id/cardCircle"
+            tools:text="종점 (00000)" />
+
+        <ImageView
+            android:id="@+id/imgFavorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="20dp"
+            android:src="@{busStop.favorite ? @drawable/ic_star : @drawable/ic_star_empty, default = @drawable/ic_star_empty}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

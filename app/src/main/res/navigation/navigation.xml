@@ -51,5 +51,13 @@
         android:name="com.example.mymanagement.view.xml.ui.transportation.bus.arrival_info.BusArrivalInfoFragment"
         android:label="BusArrivalFragment"
         tools:layout="@layout/fragment_bus_arrival_info">
+        <action
+            android:id="@+id/action_busArrivalInfo_to_busRoute"
+            app:destination="@id/busRoute" />
     </fragment>
+    <fragment
+        android:id="@+id/busRoute"
+        android:name="com.example.mymanagement.view.xml.ui.transportation.bus.route.BusRouteFragment"
+        android:label="BusRouteFragment"
+        tools:layout="@layout/fragment_bus_route"/>
 </navigation>
