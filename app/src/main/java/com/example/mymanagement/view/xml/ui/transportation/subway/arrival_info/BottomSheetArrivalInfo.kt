@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.example.mymanagement.R
 import com.example.mymanagement.databinding.BottomSheetSubwayArrivalInfoBinding
 import com.example.mymanagement.view.base.BaseBottomSheet
+import com.example.mymanagement.view.xml.ui.custom.LineChipAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +22,11 @@ class BottomSheetArrivalInfo(
         with(binding) {
             upLineAdapter = ArrivalInfoAdapter()
             downLineAdapter = ArrivalInfoAdapter()
+            lineAdapter = LineChipAdapter(
+                onClickListener = {
+                    viewModel.onChipSelect(it)
+                }
+            )
             currentStation = stationName
             vm = viewModel
         }

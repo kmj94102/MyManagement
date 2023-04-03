@@ -3,6 +3,7 @@ package com.example.mymanagement.view.xml.ui.transportation.subway.arrival_info
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mymanagement.util.SubwayLine
 import com.example.mymanagement.util.toHexString
 import com.example.network.model.SubwayArrival
 import com.example.network.repository.SubwayRepository
@@ -20,8 +21,8 @@ class ArrivalInfoViewModel @Inject constructor(
     private val _arrivalInfo = MutableStateFlow<SubwayArrival?>(null)
     val arrivalInfo: StateFlow<SubwayArrival?> = _arrivalInfo
 
-    private val _lineList = MutableStateFlow<List<String>>(emptyList())
-    val lineList: StateFlow<List<String>> = _lineList
+    private val _lineList = MutableStateFlow<List<SubwayLine>>(emptyList())
+    val lineList: StateFlow<List<SubwayLine>> = _lineList
 
     private val _upLineInfo = MutableStateFlow<List<String>>(emptyList())
     val upLineInfo: StateFlow<List<String>> = _upLineInfo
@@ -37,7 +38,7 @@ class ArrivalInfoViewModel @Inject constructor(
             .onStart { }
             .onEach {
                 _arrivalInfoList.value = it
-                _lineList.value = _arrivalInfoList.value.map { info -> info.subwayLineId }
+                _lineList.value = _arrivalInfoList.value.map { info -> SubwayLine.getSubwayLineByCode(info.subwayLineId) }
                 setArrivalInfo(0)
             }
             .onEach { }
@@ -52,7 +53,14 @@ class ArrivalInfoViewModel @Inject constructor(
                 arrival.arrItemList.filter { it.isUpLine }.map { it.arrInfo }.take(3)
             _downLineInfo.value =
                 arrival.arrItemList.filter { it.isUpLine.not() }.map { it.arrInfo }.take(3)
+            _color.value = SubwayLine.getSubwayLineByCode(arrival.subwayLineId).color.toHexString()
         }
     }
+
+    fun onChipSelect(index: Int) {
+        setArrivalInfo(index)
+    }
+
+
 
 }

@@ -14,12 +14,20 @@
             type="com.example.mymanagement.view.xml.ui.transportation.subway.arrival_info.ArrivalInfoAdapter" />
 
         <variable
+            name="lineAdapter"
+            type="com.example.mymanagement.view.xml.ui.custom.LineChipAdapter" />
+
+        <variable
             name="vm"
             type="com.example.mymanagement.view.xml.ui.transportation.subway.arrival_info.ArrivalInfoViewModel" />
 
         <variable
             name="currentStation"
             type="String" />
+
+        <variable
+            name="callback"
+            type="com.example.mymanagement.view.xml.model.CustomCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,14 +39,26 @@
         android:paddingTop="13dp"
         android:paddingBottom="23dp">
 
-        <LinearLayout
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/layoutLines"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            app:addLineChips="@{vm.lineList}"-->
+        <!--            app:onChipClick="@{(i) -> callback.intCallback(i)}"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"/>-->
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/layoutLines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:addLineChips="@{vm.lineList}"
+            app:adapter="@{lineAdapter}"
+            app:submitList="@{vm.lineList}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/divider"
@@ -50,15 +70,17 @@
             app:layout_constraintTop_toBottomOf="@id/layoutLines" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardBeforeStation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="-15dp"
-            app:cardBackgroundColor="@color/blue"
+            app:cardBackgroundColorByHex="@{vm.color}"
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="@id/cardCurrentStation"
             app:layout_constraintEnd_toStartOf="@id/cardCurrentStation"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/cardCurrentStation">
+            app:layout_constraintTop_toTopOf="@id/cardCurrentStation"
+            tools:cardBackgroundColor="@color/green">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -92,15 +114,17 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardNextStation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="-15dp"
-            app:cardBackgroundColor="@color/blue"
+            app:cardBackgroundColorByHex="@{vm.color}"
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="@id/cardCurrentStation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cardCurrentStation"
-            app:layout_constraintTop_toTopOf="@id/cardCurrentStation">
+            app:layout_constraintTop_toTopOf="@id/cardCurrentStation"
+            tools:cardBackgroundColor="@color/green">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -141,11 +165,12 @@
             android:layout_height="32dp"
             android:layout_marginTop="10dp"
             app:cardCornerRadius="16dp"
+            app:cardStrokeColorByHex="@{vm.color}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
-            app:strokeColor="@color/blue"
-            app:strokeWidth="4dp">
+            app:strokeWidth="4dp"
+            tools:strokeColor="@color/green">
 
             <TextView
                 android:id="@+id/txtCurrentStation"
@@ -223,6 +248,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:onClick="@{() -> vm.fetchArrivals(currentStation)}"
             app:icon="@drawable/ic_refresh"
             app:iconTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"

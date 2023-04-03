@@ -1,16 +1,19 @@
 package com.example.mymanagement.util
 
+import android.graphics.Color
 import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mymanagement.view.xml.ui.custom.LineChip
 import com.example.mymanagement.view.xml.ui.custom.SearchEditTextView
+import com.google.android.material.card.MaterialCardView
 
 object BindingAdapter {
 
@@ -67,18 +70,37 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @androidx.databinding.BindingAdapter("addLineChips")
-    fun bindAddLineChips(linearLayout: LinearLayout, lineList: List<String>) {
+    @androidx.databinding.BindingAdapter(value = ["addLineChips", "onChipClick"], requireAll = false)
+    fun bindAddLineChips(linearLayout: LinearLayout, lineList: List<String>, onChipClick: ((Int) -> Unit)? = {}) {
         linearLayout.removeAllViews()
-        lineList.forEach {
-            val lineInfo = SubwayLine.getSubwayLineByCode(it)
+        lineList.forEachIndexed { index, line ->
+            val lineInfo = SubwayLine.getSubwayLineByCode(line)
             linearLayout.addView(
-                LineChip(linearLayout.context).apply {
-                    text = lineInfo.lineName
-                    badgeColor = lineInfo.color.toInt()
+                LineChip(linearLayout.context).also {
+                    it.text = lineInfo.lineName
+                    it.badgeColor = lineInfo.color.toInt()
+                    it.setOnClickListener { onChipClick?.invoke(index) }
                 }
             )
         }
+    }
+
+    @JvmStatic
+    @androidx.databinding.BindingAdapter("badgeColor")
+    fun bindBadgeColor(lineChip: LineChip, color: Long) {
+        lineChip.badgeColor = color.toInt()
+    }
+
+    @JvmStatic
+    @androidx.databinding.BindingAdapter("cardBackgroundColorByHex")
+    fun bindCardBackgroundColorByHex(cardView: MaterialCardView, hexCode: String) {
+        cardView.setCardBackgroundColor(Color.parseColor(hexCode))
+    }
+
+    @JvmStatic
+    @androidx.databinding.BindingAdapter("cardStrokeColorByHex")
+    fun bindCardStrokeColorByHex(cardView: MaterialCardView, hexCode: String) {
+        cardView.strokeColor = Color.parseColor(hexCode)
     }
 
 }
