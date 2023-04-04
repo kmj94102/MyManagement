@@ -30,7 +30,7 @@ class SubwaySearchViewModel2 @Inject constructor(
     )
 
     private val _startStation = MutableStateFlow<Station?>(null)
-    val stationStation: StateFlow<Station?> = _startStation
+    val startStation: StateFlow<Station?> = _startStation
 
     private val _endStation = MutableStateFlow<Station?>(null)
     val endStation: StateFlow<Station?> = _endStation

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.example.mymanagement.view.xml.model.SubwayRouteRecyclerItem.SubwayEndPoint" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="-5dp"
+            app:backgroundColorByHex="@{item.lineColor}"
+            app:isVisible="@{item.start}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            tools:background="@color/green" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="-5dp"
+            app:backgroundColorByHex="@{item.lineColor}"
+            app:isVisible="@{!item.start}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/green" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardBackgroundColorByHex="@{item.lineColor}"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:cardBackgroundColor="@color/green">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:padding="0dp"
+                android:text="@{item.start ? item.lineCode : @string/alight}"
+                android:textColor="@color/white"
+                android:textSize="@{item.stationName.length() > 2 ? @dimen/text_size_10 : @dimen/text_size_12}"
+                android:textStyle="bold"
+                tools:text="하차" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/txtStationName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:includeFontPadding="false"
+            android:padding="0dp"
+            android:text="@{item.stationName}"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/cardView"
+            app:layout_constraintStart_toEndOf="@id/cardView"
+            app:layout_constraintTop_toTopOf="@id/cardView"
+            tools:text="의정부" />
+
+        <TextView
+            android:id="@+id/txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:includeFontPadding="false"
+            android:padding="0dp"
+            android:text="@{item.time}"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/txtStationName"
+            app:layout_constraintStart_toEndOf="@id/txtStationName"
+            app:layout_constraintTop_toTopOf="@id/txtStationName"
+            tools:text="10:05" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:includeFontPadding="false"
+            android:padding="0dp"
+            android:text="@{item.transferLocation}"
+            android:textColor="@color/gray"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/txtStationName"
+            app:layout_constraintStart_toEndOf="@id/txtTime"
+            app:layout_constraintTop_toTopOf="@id/txtStationName"
+            tools:text="추천 : 1-1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

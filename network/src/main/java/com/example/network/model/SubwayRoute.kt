@@ -91,6 +91,14 @@ data class SubwayRouteInfo(
     val list: List<RouteItem> = emptyList()
 )
 
+/**
+ * 지하철 경로
+ * @param stationCode 지하철 역 코드
+ * @param stationName 지하철 역 이름
+ * @param time 도착 시간
+ * @param lineCode 지하철 호선 코드
+ * @param transferLocation 환승 정보
+ * **/
 data class RouteItem(
     val stationCode: String,
     val stationName: String,

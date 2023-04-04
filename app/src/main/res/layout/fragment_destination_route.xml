@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="topTitle"
+            type="String" />
+
+        <variable
+            name="fragment"
+            type="com.example.mymanagement.view.base.BaseViewModelFragment" />
+
+        <variable
+            name="startStationName"
+            type="String" />
+
+        <variable
+            name="endStationName"
+            type="String" />
+
+        <variable
+            name="adapter"
+            type="com.example.mymanagement.view.xml.ui.transportation.subway.destination_route.DestinationAdapter" />
+
+        <variable
+            name="vm"
+            type="com.example.mymanagement.view.xml.ui.transportation.subway.destination_route.DestinationRouteViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/layoutHeader"
+            layout="@layout/layout_title_bar"
+            app:fragment="@{fragment}"
+            app:title="@{topTitle}" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardDestinationInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+            app:strokeColor="@color/green"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardStart"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="10dp"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintEnd_toEndOf="@id/txtStart"
+                    app:layout_constraintStart_toStartOf="@id/txtStart"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/green"
+                    app:strokeWidth="1dp" />
+
+                <com.example.mymanagement.view.xml.ui.custom.DashedDividerView
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    app:layout_constraintBottom_toBottomOf="@id/cardStart"
+                    app:layout_constraintEnd_toStartOf="@id/cardEnd"
+                    app:layout_constraintStart_toEndOf="@id/cardStart"
+                    app:layout_constraintTop_toTopOf="@id/cardStart" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardEnd"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/green"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintEnd_toEndOf="@id/txtEnd"
+                    app:layout_constraintStart_toStartOf="@id/txtEnd"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnChange"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="26dp"
+                    app:cardCornerRadius="13dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/green"
+                    app:strokeWidth="1dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_change"
+                        app:tint="@color/green" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/txtStart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:text="@{startStationName}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/btnChange"
+                    app:layout_constraintEnd_toStartOf="@id/btnChange"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnChange"
+                    tools:text="의정부" />
+
+                <TextView
+                    android:id="@+id/txtEnd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:text="@{endStationName}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/btnChange"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btnChange"
+                    app:layout_constraintTop_toTopOf="@id/btnChange"
+                    tools:text="의정부" />
+
+                <View
+                    android:id="@+id/viewBg"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/green"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnChange" />
+
+                <TextView
+                    android:id="@+id/txtDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="평일"
+                    android:textColor="@{vm.week == vm.Day ? @color/white : @color/white50, default = @color/white}"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/viewBg" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:layout_marginHorizontal="7dp"
+                    android:background="@color/white50"
+                    app:layout_constraintBottom_toBottomOf="@id/txtDay"
+                    app:layout_constraintStart_toEndOf="@id/txtDay"
+                    app:layout_constraintTop_toTopOf="@id/txtDay" />
+
+                <TextView
+                    android:id="@+id/txtSaturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="10dp"
+                    android:text="토요일"
+                    android:textColor="@{vm.week == vm.Saturday ? @color/white : @color/white50, default = @color/white50}"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/txtDay"
+                    app:layout_constraintTop_toTopOf="@id/viewBg" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:layout_marginHorizontal="7dp"
+                    android:background="@color/white50"
+                    app:layout_constraintBottom_toBottomOf="@id/txtDay"
+                    app:layout_constraintStart_toEndOf="@id/txtSaturday"
+                    app:layout_constraintTop_toTopOf="@id/txtDay" />
+
+                <TextView
+                    android:id="@+id/txtHoliday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="10dp"
+                    android:text="공휴일"
+                    android:textColor="@{vm.week == vm.Holiday ? @color/white : @color/white50, default = @color/white50}"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/txtSaturday"
+                    app:layout_constraintTop_toTopOf="@id/viewBg" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_star_empty"
+                    app:layout_constraintBottom_toBottomOf="@id/txtDay"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/txtDay" />
+
+                <TextView
+                    android:id="@+id/labelTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="시간"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/imgTimeSetting"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/imgTimeSetting" />
+
+                <TextView
+                    android:id="@+id/txtTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@{vm.searchTime}"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/imgTimeSetting"
+                    app:layout_constraintStart_toEndOf="@id/labelTime"
+                    app:layout_constraintTop_toTopOf="@id/imgTimeSetting"
+                    tools:text="10:00" />
+
+                <ImageView
+                    android:id="@+id/imgTimeSetting"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_arrow_bottom"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/txtTime"
+                    app:layout_constraintTop_toBottomOf="@id/txtDay"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="@{vm.info.fee}"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/imgTimeSetting"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/imgTimeSetting"
+                    tools:text="100,000원" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/labelDeparture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="출발"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/txtDepartureTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtDepartureTime" />
+
+        <TextView
+            android:id="@+id/txtDepartureTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:text="@{vm.info.deptTime}"
+            android:textColor="@color/green"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/labelDeparture"
+            app:layout_constraintTop_toBottomOf="@id/cardDestinationInfo"
+            tools:text="10:00" />
+
+        <TextView
+            android:id="@+id/labelArrival"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="도착"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/txtDepartureTime"
+            app:layout_constraintStart_toEndOf="@id/txtDepartureTime"
+            app:layout_constraintTop_toTopOf="@id/txtDepartureTime" />
+
+        <TextView
+            android:id="@+id/txtArrivalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:text="@{vm.info.arrivalTime}"
+            android:textColor="@color/green"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/labelArrival"
+            app:layout_constraintTop_toBottomOf="@id/cardDestinationInfo"
+            tools:text="12:10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@{vm.info.transferCount > 0 ? @string/transfer_count(vm.info.transferCount) : @string/no_transfer }"
+            android:textColor="@color/gray"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/txtDepartureTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtDepartureTime"
+            tools:text="1회 환승" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="50dp"
+            app:adapter="@{adapter}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtDepartureTime"
+            app:submitList="@{vm.list}"
+            tools:listitem="@layout/item_subway_route" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

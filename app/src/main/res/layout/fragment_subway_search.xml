@@ -30,18 +30,18 @@
         <include
             android:id="@+id/title"
             layout="@layout/layout_title_bar"
-            app:title="@{topTitle}"
-            app:fragment="@{fragment}"/>
+            app:fragment="@{fragment}"
+            app:title="@{topTitle}" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDestinationRoute"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            app:isVisible="@{vm.stationStation != null || vm.endStation != null}"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="6dp"
             app:cardElevation="0dp"
+            app:isVisible="@{vm.startStation != null || vm.endStation != null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardStart"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:layout_marginTop="10dp"
@@ -66,7 +67,17 @@
                     app:strokeColor="@color/green"
                     app:strokeWidth="1dp" />
 
+                <com.example.mymanagement.view.xml.ui.custom.DashedDividerView
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="5dp"
+                    app:layout_constraintTop_toTopOf="@id/cardStart"
+                    app:layout_constraintBottom_toBottomOf="@id/cardStart"
+                    app:layout_constraintStart_toEndOf="@id/cardStart"
+                    app:layout_constraintEnd_toStartOf="@id/cardEnd"/>
+
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardEnd"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:layout_marginTop="10dp"
@@ -77,16 +88,15 @@
                     app:layout_constraintStart_toStartOf="@id/txtEnd"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
                 <TextView
                     android:id="@+id/txtStart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:text="@{vm.startStation.stationName}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:text="@{vm.stationStation.stationName}"
                     app:layout_constraintBottom_toBottomOf="@id/btnChange"
                     app:layout_constraintEnd_toStartOf="@id/btnChange"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,10 +132,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:text="@{vm.endStation.stationName}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:text="@{vm.endStation.stationName}"
                     app:layout_constraintBottom_toBottomOf="@id/btnChange"
                     app:layout_constraintEnd_toStartOf="@id/viewNext"
                     app:layout_constraintStart_toEndOf="@id/btnChange"
@@ -136,7 +146,7 @@
                     android:id="@+id/viewNext"
                     android:layout_width="44dp"
                     android:layout_height="63dp"
-                    android:background="@{vm.stationStation != null &amp;&amp; vm.endStation != null ? @color/green : @color/gray, default = @color/gray}"
+                    android:background="@{vm.startStation != null &amp;&amp; vm.endStation != null ? @color/green : @color/gray, default = @color/gray}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -193,11 +203,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
-                android:text="즐겨 찾기만"
                 android:buttonTint="@color/green"
-                app:layout_constraintTop_toBottomOf="@id/editSearch"
+                android:text="즐겨 찾기만"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editSearch" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

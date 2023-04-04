@@ -3,4 +3,7 @@
     <string name="title_activity_compose_main">ComposeMainActivity</string>
     <string name="label_arrival_info"><![CDATA[%1$s <font color="#FFF7A4A4">%2$s</font>]]></string>
     <string name="bus_route">%1$s (%2$s)</string>
+    <string name="alight">하차</string>
+    <string name="transfer_count">%d회 환승</string>
+    <string name="no_transfer">환승 없음</string>
 </resources>

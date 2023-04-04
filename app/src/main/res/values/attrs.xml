@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DashedDividerView">
+        <attr name="dashOrientation" format="integer"/>
+        <attr name="dashGap" format="float"/>
+        <attr name="dashLength" format="float"/>
+        <attr name="dashThickness" format="float"/>
+    </declare-styleable>
+
+</resources>

@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.example.mymanagement.view.xml.ui.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/transportationFragment"
         android:name="com.example.mymanagement.view.xml.ui.transportation.TransportationFragment"
@@ -26,17 +26,26 @@
         android:id="@+id/scheduleFragment"
         android:name="com.example.mymanagement.view.xml.ui.schedule.ScheduleFragment"
         android:label="ScheduleFragment"
-        tools:layout="@layout/fragment_schedule"/>
+        tools:layout="@layout/fragment_schedule" />
     <fragment
         android:id="@+id/otherFragment"
         android:name="com.example.mymanagement.view.xml.ui.other.OtherFragment"
         android:label="OtherFragment"
-        tools:layout="@layout/fragment_other"/>
+        tools:layout="@layout/fragment_other" />
     <fragment
         android:id="@+id/subwayScheduleFragment"
         android:name="com.example.mymanagement.view.xml.ui.transportation.subway.SubwaySearchFragment"
         android:label="SubwaySearchFragment"
-        tools:layout="@layout/fragment_subway_search"/>
+        tools:layout="@layout/fragment_subway_search">
+        <action
+            android:id="@+id/action_subwayScheduleFragment_to_destinationRouteFragment"
+            app:destination="@id/destinationRouteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/destinationRouteFragment"
+        android:name="com.example.mymanagement.view.xml.ui.transportation.subway.destination_route.DestinationRouteFragment"
+        android:label="DestinationRouteFragment"
+        tools:layout="@layout/fragment_destination_route" />
     <fragment
         android:id="@+id/busSearchFragment"
         android:name="com.example.mymanagement.view.xml.ui.transportation.bus.BusSearchFragment"
@@ -59,5 +68,5 @@
         android:id="@+id/busRoute"
         android:name="com.example.mymanagement.view.xml.ui.transportation.bus.route.BusRouteFragment"
         android:label="BusRouteFragment"
-        tools:layout="@layout/fragment_bus_route"/>
+        tools:layout="@layout/fragment_bus_route" />
 </navigation>

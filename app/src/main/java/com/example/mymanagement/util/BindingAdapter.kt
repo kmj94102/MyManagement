@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mymanagement.view.xml.ui.custom.DashedDividerView
 import com.example.mymanagement.view.xml.ui.custom.LineChip
 import com.example.mymanagement.view.xml.ui.custom.SearchEditTextView
 import com.google.android.material.card.MaterialCardView
@@ -44,7 +45,10 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @androidx.databinding.BindingAdapter(value=["gridCount", "verticalSpacing", "horizontalSpacing"], requireAll = true)
+    @androidx.databinding.BindingAdapter(
+        value = ["gridCount", "verticalSpacing", "horizontalSpacing"],
+        requireAll = true
+    )
     fun bindGridDecoration(
         recyclerView: RecyclerView,
         gridCount: Int,
@@ -64,14 +68,21 @@ object BindingAdapter {
     @JvmStatic
     @androidx.databinding.BindingAdapter("onImageViewClick")
     fun bindImageViewClick(imageView: ImageView, onClick: () -> Unit) {
-        imageView.setOnClickListener{
+        imageView.setOnClickListener {
             onClick()
         }
     }
 
     @JvmStatic
-    @androidx.databinding.BindingAdapter(value = ["addLineChips", "onChipClick"], requireAll = false)
-    fun bindAddLineChips(linearLayout: LinearLayout, lineList: List<String>, onChipClick: ((Int) -> Unit)? = {}) {
+    @androidx.databinding.BindingAdapter(
+        value = ["addLineChips", "onChipClick"],
+        requireAll = false
+    )
+    fun bindAddLineChips(
+        linearLayout: LinearLayout,
+        lineList: List<String>,
+        onChipClick: ((Int) -> Unit)? = {}
+    ) {
         linearLayout.removeAllViews()
         lineList.forEachIndexed { index, line ->
             val lineInfo = SubwayLine.getSubwayLineByCode(line)
@@ -89,6 +100,12 @@ object BindingAdapter {
     @androidx.databinding.BindingAdapter("badgeColor")
     fun bindBadgeColor(lineChip: LineChip, color: Long) {
         lineChip.badgeColor = color.toInt()
+    }
+
+    @JvmStatic
+    @androidx.databinding.BindingAdapter("backgroundColorByHex")
+    fun bindBackgroundColorByHex(view: View, hexCode: String) {
+        view.setBackgroundColor(Color.parseColor(hexCode))
     }
 
     @JvmStatic
