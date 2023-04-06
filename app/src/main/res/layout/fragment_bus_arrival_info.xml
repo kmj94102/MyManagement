@@ -39,7 +39,7 @@
             android:layout_margin="10dp"
             android:elevation="10dp"
             android:onClick="@{() -> vm.toggleBusStopFavoriteStatus(title)}"
-            android:src="@{vm.isFavoriteBusStop() ? @drawable/ic_star : @drawable/ic_star_empty}"
+            android:src="@{vm.favoriteBusStop ? @drawable/ic_star : @drawable/ic_star_empty}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_star" />

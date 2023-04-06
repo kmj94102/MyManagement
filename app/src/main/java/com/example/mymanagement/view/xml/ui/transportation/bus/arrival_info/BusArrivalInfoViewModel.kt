@@ -18,7 +18,7 @@ class BusArrivalInfoViewModel @Inject constructor(
     private var nodeId = ""
 
     private val _isFavoriteBusStop = MutableStateFlow(false)
-    val isFavoriteBusStop: StateFlow<Boolean> = _isFavoriteBusStop
+    val favoriteBusStop: StateFlow<Boolean> = _isFavoriteBusStop
 
     private val sharedFlow = MutableSharedFlow<Unit>(replay = 1)
     val arrivalInfoList = sharedFlow.flatMapLatest {

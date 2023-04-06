@@ -25,7 +25,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
             finish()
         }
 
-        binding.btnXml.performClick()
+        binding.btnCompose.performClick()
+//        binding.btnXml.performClick()
 
     }
 }
