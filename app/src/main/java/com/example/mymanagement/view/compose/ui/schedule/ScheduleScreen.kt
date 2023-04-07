@@ -1,19 +1,17 @@
 package com.example.mymanagement.view.compose.ui.schedule
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mymanagement.util.nonRippleClickable
 import com.example.mymanagement.util.textStyle24B
 import com.example.mymanagement.view.compose.ui.custom.CustomCalendar
@@ -24,7 +22,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ScheduleScreen() {
+fun ScheduleScreen(
+    viewModel: ScheduleViewModel = hiltViewModel()
+) {
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = false
@@ -38,15 +38,15 @@ fun ScheduleScreen() {
         modifier = Modifier.fillMaxSize(),
         sheetContent = {
             YearMonthSelectBottomSheet(
-                year = "2023",
-                month = "04",
+                year = viewModel.year.value,
+                month = viewModel.month.value,
                 onDismiss = {
                     scope.launch {
                         sheetState.hide()
                     }
                 },
                 onSelect = { year, month ->
-                    Log.e("++++++", "$year, $month")
+                    viewModel.setYearMonth(year = year, month = month)
                 }
             )
         }
@@ -57,7 +57,8 @@ fun ScheduleScreen() {
                 scope.launch {
                     sheetState.show()
                 }
-            }
+            },
+            viewModel = viewModel
         )
     }
 }
@@ -65,18 +66,9 @@ fun ScheduleScreen() {
 @Composable
 fun ScheduleHeader(
     modifier: Modifier = Modifier,
-    onYearMonthSelect: () -> Unit
+    onYearMonthSelect: () -> Unit,
+    viewModel: ScheduleViewModel
 ) {
-    val year = remember {
-        mutableStateOf(2023)
-    }
-    val month = remember {
-        mutableStateOf(4)
-    }
-    val selectDate = remember {
-        mutableStateOf("")
-    }
-
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
@@ -91,7 +83,7 @@ fun ScheduleHeader(
             Text(text = "일정", style = textStyle24B().copy(color = White))
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "2023.02",
+                text = "${viewModel.year.value}.${viewModel.month.value}",
                 style = textStyle24B().copy(color = White),
                 modifier = Modifier.nonRippleClickable { onYearMonthSelect() }
             )
@@ -107,9 +99,10 @@ fun ScheduleHeader(
         }
         Spacer(modifier = Modifier.height(10.dp))
         CustomCalendar(
-            year = year,
-            month = month,
-            selectDate = selectDate,
+            today = viewModel.today,
+            calendarInfo = viewModel.calendarInfo,
+            selectDate = viewModel.selectDate.value,
+            onSelectChange = viewModel::onSelectChange,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
         Spacer(modifier = Modifier.height(5.dp))

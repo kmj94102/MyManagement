@@ -27,16 +27,12 @@ import java.util.*
 
 @Composable
 fun CustomCalendar(
-    year: State<Int>,
-    month: State<Int>,
-    selectDate: MutableState<String>,
+    today: String,
+    calendarInfo: List<CalendarItem>,
+    selectDate: String,
+    onSelectChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val dateList = mutableListOf<CalendarItem>()
-    dateList.addAll(fetchCalendarInfo(year.value, month.value))
-    val today = getToday("yyyy.MM.dd")
-    if (selectDate.value.isEmpty()) selectDate.value = today
-
     Column(modifier.fillMaxWidth()) {
         WeekLabel()
         Spacer(modifier = Modifier.height(5.dp))
@@ -44,63 +40,25 @@ fun CustomCalendar(
             modifier = Modifier.fillMaxWidth()
         ) {
             gridItems(
-                data = dateList,
+                data = calendarInfo,
                 columnCount = 7,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) { item, _ ->
                 if (item.date.isEmpty()) {
-                    Box(modifier = Modifier)
+                    Box(modifier = Modifier.size(35.dp))
                 } else {
                     DateCard(
                         calendarItem = item,
-                        selectDate = selectDate.value,
-                        today = today
-                    ) {
-                        selectDate.value = it
-                    }
+                        selectDate = selectDate,
+                        today = today,
+                        onClick = onSelectChange
+                    )
                 }
             }
         }
     }
 }
-
-/** 달력 정보 가져오기 **/
-private fun fetchCalendarInfo(
-    year: Int,
-    month: Int
-): List<CalendarItem> {
-    val calendar = Calendar.getInstance().apply {
-        set(Calendar.YEAR, year)
-        set(Calendar.MONTH, month - 1)
-        set(Calendar.DAY_OF_MONTH, 1)
-    }
-    val monthDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-    val firstDay = calendar.get(Calendar.DAY_OF_WEEK)
-
-    return (1..42)
-        .map {
-            if (it < firstDay || it > monthDays + firstDay - 1) {
-                CalendarItem()
-            } else {
-                val date = (it - firstDay + 1).toString()
-                CalendarItem(
-                    date = date,
-                    dayOfWeek = getDayOfWeek(it),
-                    detailDate = getDetailDate(year, month, date)
-                )
-            }
-        }
-}
-
-private fun getDayOfWeek(index: Int): String {
-    val list = listOf("일", "월", "화", "수", "목", "금", "토")
-    return list[(index - 1) % 7]
-}
-
-private fun getDetailDate(year: Int, month: Int, date: String) =
-    "$year.${month.toString().padStart(2, '0')}.${date.padStart(2, '0')}"
-
 
 /** 요일 라벨 **/
 @Composable

@@ -1,5 +1,7 @@
 package com.example.mymanagement.view.compose.ui.custom.model
 
+import java.util.*
+
 /**
  * 달력 아이템
  * @param date 날짜
@@ -17,3 +19,42 @@ data class CalendarItem(
     val detailDate: String = "",
     val scheduleList: List<String> = listOf(),
 )
+
+/** 달력 정보 생성 **/
+fun fetchCalendarInfo(
+    year: Int,
+    month: Int
+): List<CalendarItem> {
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, year)
+        set(Calendar.MONTH, month - 1)
+        set(Calendar.DAY_OF_MONTH, 1)
+    }
+    val monthDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    val firstDay = calendar.get(Calendar.DAY_OF_WEEK)
+
+    val lastDayIndex = firstDay + monthDays - 2
+    val lastIndex = if (lastDayIndex < 35) 34 else 41
+
+    return (0..lastIndex)
+        .map {
+            if (it < firstDay - 1 || it > lastDayIndex) {
+                CalendarItem()
+            } else {
+                val date = (it - firstDay + 2).toString()
+                CalendarItem(
+                    date = date,
+                    dayOfWeek = getDayOfWeek(it),
+                    detailDate = getDetailDate(year, month, date)
+                )
+            }
+        }
+}
+
+private fun getDayOfWeek(index: Int): String {
+    val list = listOf("일", "월", "화", "수", "목", "금", "토")
+    return list[index % 7]
+}
+
+private fun getDetailDate(year: Int, month: Int, date: String) =
+    "$year.${month.toString().padStart(2, '0')}.${date.padStart(2, '0')}"
