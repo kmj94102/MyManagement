@@ -2,6 +2,7 @@ package com.example.network.di
 
 import com.example.network.BuildConfig
 import com.example.network.service.*
+import com.kakao.sdk.user.UserApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -104,8 +105,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideKakaoClient(kakaoService: KakaoService): KakaoClient =
-        KakaoClient(kakaoService)
+    fun provideKakaoClient(
+        kakaoService: KakaoService,
+        userApiClient: UserApiClient
+    ): KakaoClient =
+        KakaoClient(kakaoService, userApiClient)
 
     @Provides
     @Singleton
@@ -116,5 +120,9 @@ object NetworkModule {
     @Singleton
     fun provideSubwayClient(subwayService: SubwayService): SubwayClient =
         SubwayClient(subwayService)
+
+    @Provides
+    @Singleton
+    fun provideUserApiClient(): UserApiClient = UserApiClient.instance
 
 }

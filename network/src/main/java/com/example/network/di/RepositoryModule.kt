@@ -30,4 +30,9 @@ interface RepositoryModule {
         transportationRepositoryImpl: TransportationRepositoryImpl
     ): TransportationRepository
 
+    @Binds
+    fun bindKakaoRepository(
+        kakaoRepositoryImpl: KakaoRepositoryImpl
+    ): KakaoRepository
+
 }

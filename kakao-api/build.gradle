@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
@@ -37,6 +38,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
+    implementation project(path: ':network')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -52,10 +54,31 @@ dependencies {
     def retrofit_version = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    def okhttp3_version = '4.10.0'
+    def okhttp3_version = '5.0.0-alpha.6'
     // okhttp - https://github.com/square/okhttp (Apache 2.0)
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
+
+    implementation "androidx.datastore:datastore-core:1.0.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.19.2"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }
 
 kapt {

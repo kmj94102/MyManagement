@@ -1,13 +1,13 @@
 package com.example.mymanagement.view.compose.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavArgument
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.mymanagement.view.compose.ui.home.HomeScreen
+import com.example.mymanagement.view.compose.ui.login.LoginScreen
 import com.example.mymanagement.view.compose.ui.other.OtherScreen
 import com.example.mymanagement.view.compose.ui.schedule.ScheduleScreen
 import com.example.mymanagement.view.compose.ui.transportation.TransportationScreen
@@ -28,11 +28,29 @@ fun NavigationGraph(
         navController = navController,
         startDestination = BottomNavItems.Home.item.routeWithPostFix
     ) {
+        /** 로그인 **/
+        composable(
+            route = NavScreen.Login.item.routeWithPostFix
+        ) {
+            LoginScreen(
+                goToHome = {
+                    navController.navigate(BottomNavItems.Home.item.routeWithPostFix) {
+                        popUpTo(0)
+                    }
+                }
+            )
+        }
         /** 홈 화면 **/
         composable(
             route = BottomNavItems.Home.item.routeWithPostFix
         ) {
-            HomeScreen()
+            HomeScreen(
+                goToLogin = {
+                    navController.navigate(NavScreen.Login.item.routeWithPostFix) {
+                        popUpTo(0)
+                    }
+                }
+            )
         } // 홈 화면
         /** 교통 화면 **/
         composable(

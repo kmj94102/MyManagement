@@ -1,7 +1,6 @@
 package com.example.mymanagement.view.main
 
 import androidx.lifecycle.ViewModel
-import com.example.mymanagement.kakao_api.service.KakaoLoginClient
 import com.example.network.service.BusClient
 import com.example.network.service.KakaoClient
 import com.example.network.service.SubwayClient
@@ -10,7 +9,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val loginClient: KakaoLoginClient,
     private val kakaoClient: KakaoClient,
     private val busClient: BusClient,
     private val subwayClient: SubwayClient

@@ -33,6 +33,12 @@ fun makeRouteWithArgs(route: String, vararg args: String): String = buildString 
 }
 
 sealed class NavScreen(val item: MainNavItem) {
+    object Login: NavScreen(
+        MainNavItem(
+            title = "로그인",
+            route = "Login"
+        )
+    )
     object SubwaySearch: NavScreen(
         MainNavItem(
             title = "지하철 검색",

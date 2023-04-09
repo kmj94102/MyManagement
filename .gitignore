@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# ignore src/main/res/values/kako_strings.xml file
+src/main/res/values/kako_strings.xml
