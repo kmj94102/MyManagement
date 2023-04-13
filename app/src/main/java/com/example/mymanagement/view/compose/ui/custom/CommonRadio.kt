@@ -15,28 +15,25 @@ import com.example.mymanagement.view.compose.ui.theme.Black
 import com.example.mymanagement.view.compose.ui.theme.Gray
 
 @Composable
-fun CommonCheckBox(
+fun CommonRadio(
     text: String,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = textStyle16(),
     isEnable: Boolean = true,
-    onCheckedChange: (Boolean) -> Unit,
+    check: Boolean,
+    onCheckedChange: (String) -> Unit,
 ) {
-    val check = remember {
-        mutableStateOf(false)
-    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.nonRippleClickable {
             if (isEnable) {
-                check.value = check.value.not()
-                onCheckedChange(check.value)
+                onCheckedChange(text)
             }
         }
     ) {
         val composition by rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(com.example.mymanagement.R.raw.check_box)
+            spec = LottieCompositionSpec.RawRes(com.example.mymanagement.R.raw.radio)
         )
         val animatable = rememberLottieAnimatable()
 
@@ -47,8 +44,8 @@ fun CommonCheckBox(
         )
         Text(text = text, style = textStyle.copy(color = if (isEnable) Black else Gray))
 
-        LaunchedEffect(check.value) {
-            if (check.value) {
+        LaunchedEffect(check) {
+            if (check) {
                 animatable.animate(
                     composition,
                     clipSpec = LottieClipSpec.Progress(0.3f, 0.95f),

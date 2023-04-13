@@ -36,12 +36,14 @@ import com.example.mymanagement.util.textStyle16
 @Composable
 fun CommonTextField(
     value: String,
-    hint: String,
     modifier: Modifier = Modifier,
-    leadingIcon: @Composable () -> Unit = {},
+    hint: String = "",
+    maxLength: Int = -1,
+    leadingIcon: (@Composable () -> Unit)? = null,
     textStyle: TextStyle = textStyle16(),
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Done,
+    isReadOnly: Boolean = false,
     onValueChange: (String) -> Unit,
     onSearch: (String) -> Unit = {},
 ) {
@@ -49,7 +51,11 @@ fun CommonTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (maxLength == -1 || it.length <= maxLength) {
+                onValueChange(it)
+            }
+        },
         modifier = modifier,
         placeholder = {
             Text(text = hint, style = textStyle.copy(color = Gray))
@@ -77,8 +83,9 @@ fun CommonTextField(
             backgroundColor = White,
             cursorColor = Green,
             focusedIndicatorColor = Green,
-            unfocusedIndicatorColor = Black
+            unfocusedIndicatorColor = Gray
         ),
+        readOnly = isReadOnly,
         shape = RoundedCornerShape(6.dp)
     )
 }

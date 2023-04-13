@@ -103,6 +103,16 @@ sealed class NavScreen(val item: MainNavItem) {
         const val Number = "number"
         const val NodeId = "nodeId"
     }
+
+    object RegisterSchedule: NavScreen(
+        MainNavItem(
+            title = "일정 등록",
+            route = "RegisterSchedule",
+            routeWithPostFix = "RegisterSchedule/{date}"
+        )
+    ) {
+        const val Date = "date"
+    }
 }
 
 enum class BottomNavItems(val item: BottomNavItem) {

@@ -2,6 +2,7 @@ package com.example.network.service
 
 import com.example.network.BuildConfig
 import com.example.network.model.PlaceResult
+import com.example.network.model.kakao.*
 import retrofit2.http.*
 
 interface KakaoService {
@@ -17,15 +18,23 @@ interface KakaoService {
     suspend fun getCalenderList(
         @Header("Authorization") token: String,
         @Query("filter") filter: String? = "USER"
-    )
+    ): CalendarIdInfo
 
+    /**
+     * 공휴일 정보 가져오기
+     * @param from 일정을 조회할 기간의 시작 시각, UTC*, RFC5545의 DATE-TIME 형식(예: 2022-05-17T12:00:00Z)
+     * @param to 일정을 조회할 기간의 종료 시각, from 이후 31일 이내의 값, UTC*, RFC5545의 DATE-TIME 형식(예: 2022-06-17T12:00:00Z)
+     * **/
     @GET("/v2/api/calendar/holidays")
     suspend fun getHolidays(
-        @Header("Authorization") token: String,
+        @Header("Authorization") token: String = BuildConfig.KAKAO_ADMIN_AUTHORIZATION,
         @Query("from") from: String,
         @Query("to") to: String
-    )
+    ): KakaoApiResult<HolidayItem>
 
+    /**
+     * 일정 리스트 조회
+     * **/
     @GET("/v2/api/calendar/events")
     suspend fun getSchedules(
         @Header("Authorization") token: String,
@@ -34,13 +43,22 @@ interface KakaoService {
         @Query("to") to: String
     )
 
+    /**
+     * 일정 생성
+     * **/
     @FormUrlEncoded
     @POST("/v2/api/calendar/create/event")
     suspend fun setSchedule(
         @Header("Authorization") token: String,
-//        @Field("calendar_id") calendar_id: String,
-        @Field("event") event: String
-    )
+        @Field("event", encoded=true) event: String,
+    ): EventCaretResult
+
+    @Headers("Content-Type: application/json")
+    @POST("/v2/api/calendar/create/event")
+    suspend fun setSchedule2(
+        @Header("Authorization") token: String,
+        @Body event: EventParam,
+    ): EventCaretResult
 
     /**
      * 키워드로 장소 검색하기

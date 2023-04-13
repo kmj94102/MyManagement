@@ -5,4 +5,5 @@ option java_multiple_files = true;
 
 message OnLoginState {
   string kakaoToken = 1;
+  string calendarId = 2;
 }

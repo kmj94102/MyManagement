@@ -1,11 +1,14 @@
 package com.example.mymanagement.view.compose.ui.custom
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,10 +20,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import com.example.mymanagement.util.textStyle24B
 import com.example.mymanagement.view.compose.ui.theme.Gray
-import com.google.accompanist.pager.*
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectSpinner(
     selectList: List<String>,
@@ -29,7 +31,7 @@ fun SelectSpinner(
 ) {
     Box {
         VerticalPager(
-            count = selectList.size,
+            pageCount = selectList.size,
             contentPadding = PaddingValues(vertical = 60.dp),
             state = state,
             modifier = Modifier
@@ -43,7 +45,8 @@ fun SelectSpinner(
                     text = selectList[index],
                     style = textStyle24B().copy(fontSize = 22.sp),
                     modifier = Modifier.graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(index).absoluteValue
+                        val pageOffset = ((state.currentPage - index)
+                                + state.currentPageOffsetFraction).absoluteValue
                         alpha = lerp(
                             start = 0.2f,
                             stop = 1f,

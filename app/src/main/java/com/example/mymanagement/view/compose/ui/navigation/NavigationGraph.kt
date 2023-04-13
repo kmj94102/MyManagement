@@ -10,6 +10,7 @@ import com.example.mymanagement.view.compose.ui.home.HomeScreen
 import com.example.mymanagement.view.compose.ui.login.LoginScreen
 import com.example.mymanagement.view.compose.ui.other.OtherScreen
 import com.example.mymanagement.view.compose.ui.schedule.ScheduleScreen
+import com.example.mymanagement.view.compose.ui.schedule.register.RegisterScheduleScreen
 import com.example.mymanagement.view.compose.ui.transportation.TransportationScreen
 import com.example.mymanagement.view.compose.ui.transportation.bus.BusStationSearchScreen
 import com.example.mymanagement.view.compose.ui.transportation.bus.arrival_info.BusStopArrivalInfoScreen
@@ -39,7 +40,7 @@ fun NavigationGraph(
                     }
                 }
             )
-        }
+        } // 로그인
         /** 홈 화면 **/
         composable(
             route = BottomNavItems.Home.item.routeWithPostFix
@@ -69,8 +70,31 @@ fun NavigationGraph(
         composable(
             route = BottomNavItems.Schedule.item.routeWithPostFix
         ) {
-            ScheduleScreen()
+            ScheduleScreen(
+                goToRegister = { date ->
+                    navController.navigate(
+                        makeRouteWithArgs(
+                            NavScreen.RegisterSchedule.item.route,
+                            date
+                        )
+                    )
+                }
+            )
         } // 일정 화면
+        /** 일정 등록 화면 **/
+        composable(
+            route = NavScreen.RegisterSchedule.item.routeWithPostFix,
+            arguments = listOf(
+                navArgument(NavScreen.RegisterSchedule.Date) { type = NavType.StringType }
+            )
+        ) { entry ->
+            val date =
+                entry.arguments?.getString(NavScreen.RegisterSchedule.Date) ?: return@composable
+            RegisterScheduleScreen(
+                date = date,
+                onBackClick = onBackClick
+            )
+        } // 일정 등록 화면
         /** 기타 화면 **/
         composable(
             route = BottomNavItems.Other.item.routeWithPostFix
@@ -215,14 +239,17 @@ fun NavigationGraph(
         composable(
             route = NavScreen.SubwaySchedule.item.routeWithPostFix,
             arguments = listOf(
-                navArgument(NavScreen.SubwaySchedule.CurrentStationName) { type = NavType.StringType },
+                navArgument(NavScreen.SubwaySchedule.CurrentStationName) {
+                    type = NavType.StringType
+                },
                 navArgument(NavScreen.SubwaySchedule.PrevStationName) { type = NavType.StringType },
                 navArgument(NavScreen.SubwaySchedule.NextStationName) { type = NavType.StringType },
                 navArgument(NavScreen.SubwaySchedule.StationCode) { type = NavType.StringType },
             )
         ) { entry ->
             entry.arguments?.getString(NavScreen.SubwaySchedule.StationCode) ?: return@composable
-            val current = entry.arguments?.getString(NavScreen.SubwaySchedule.CurrentStationName) ?: return@composable
+            val current = entry.arguments?.getString(NavScreen.SubwaySchedule.CurrentStationName)
+                ?: return@composable
             val prev = entry.arguments?.getString(NavScreen.SubwaySchedule.PrevStationName) ?: ""
             val next = entry.arguments?.getString(NavScreen.SubwaySchedule.NextStationName) ?: ""
 

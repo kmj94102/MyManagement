@@ -10,12 +10,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.mymanagement.R
 import com.example.mymanagement.util.nonRippleClickable
 import com.example.mymanagement.util.textStyle24B
 import com.example.mymanagement.view.compose.ui.custom.CustomCalendar
+import com.example.mymanagement.view.compose.ui.custom.model.CalendarItem
 import com.example.mymanagement.view.compose.ui.schedule.bottom_sheet.YearMonthSelectBottomSheet
+import com.example.mymanagement.view.compose.ui.theme.Gray
 import com.example.mymanagement.view.compose.ui.theme.Green
 import com.example.mymanagement.view.compose.ui.theme.White
 import kotlinx.coroutines.launch
@@ -23,6 +30,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScheduleScreen(
+    goToRegister: (String) -> Unit,
     viewModel: ScheduleViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState(
@@ -51,15 +59,22 @@ fun ScheduleScreen(
             )
         }
     ) {
-        ScheduleHeader(
-            modifier = Modifier.fillMaxWidth(),
-            onYearMonthSelect = {
-                scope.launch {
-                    sheetState.show()
-                }
-            },
-            viewModel = viewModel
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            ScheduleHeader(
+                modifier = Modifier.fillMaxWidth(),
+                onYearMonthSelect = {
+                    scope.launch {
+                        sheetState.show()
+                    }
+                },
+                viewModel = viewModel
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            ScheduleBody(
+                item = viewModel.selectCalendarItem,
+                goToRegister = goToRegister
+            )
+        }
     }
 }
 
@@ -106,5 +121,44 @@ fun ScheduleHeader(
             modifier = Modifier.padding(horizontal = 20.dp)
         )
         Spacer(modifier = Modifier.height(5.dp))
+    }
+}
+
+@Composable
+fun ScheduleBody(
+    item: CalendarItem?,
+    goToRegister: (String) -> Unit
+) {
+    if (item == null) return
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                buildAnnotatedString {
+                    append("${item.date.padStart(2, '0')} (${item.dayOfWeek}) ")
+                    withStyle(style = SpanStyle(color = Gray, fontSize = 16.sp)) {
+                        append(item.dateInfo)
+                    }
+                },
+                style = textStyle24B()
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_plus),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(24.dp)
+                    .nonRippleClickable {
+                        goToRegister(item.detailDate)
+                    }
+            )
+        }
     }
 }

@@ -2,8 +2,8 @@ package com.example.network.service
 
 import android.content.Context
 import android.util.Log
-import com.example.network.model.EventCreate
-import com.example.network.model.PlaceResult
+import com.example.network.model.kakao.EventCreate
+import com.example.network.model.kakao.EventParam
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -11,7 +11,6 @@ import com.kakao.sdk.user.UserApiClient
 import com.kakao.sdk.user.model.User
 import javax.inject.Inject
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class KakaoClient @Inject constructor(
@@ -50,9 +49,6 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    suspend fun loginWithKakaoAccount(context: Context) =
-        UserApiClient.loginWithKakaoAccount(context = context)
-
     /**
      * 카카오 계정으로 로그인
      */
@@ -67,8 +63,21 @@ class KakaoClient @Inject constructor(
         }
     }
 
+    private suspend fun UserApiClient.Companion.loginWithNewScopes(context: Context): Boolean {
+        val scope = mutableListOf("talk_calendar")
+        return suspendCoroutine { continuation ->
+            instance.loginWithNewScopes(context, scope) { _, error ->
+                error?.printStackTrace()
+                continuation.resume(error == null)
+            }
+        }
+    }
+
+    suspend fun calendarPermission(context: Context) =
+        UserApiClient.loginWithNewScopes(context)
+
     /**
-     * 카카오 로그인
+     * 카카오 로그아웃
      * **/
     suspend fun logout(): Throwable? {
         return suspendCoroutine { continuation ->
@@ -94,25 +103,16 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    suspend fun getCalendarList(token: String) {
-        try {
-            kakaoService.getCalenderList(token)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    suspend fun getCalendarList(token: String) =
+        kakaoService.getCalenderList("Bearer $token")
 
-    suspend fun getHolidays() {
-        try {
-            kakaoService.getHolidays(
-                token = "KakaoAK 78a770657caca9dec4175cf17375acf4",
-                from = "2023-02-01T00:00:00Z",
-                to = "2023-02-31T00:00:00Z"
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    suspend fun fetchHolidays(
+        from: String,
+        to: String
+    ) = kakaoService.getHolidays(
+        from = from,
+        to = to
+    ).events
 
     suspend fun getSchedules(token: String) {
         try {
@@ -126,20 +126,21 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    suspend fun setSchedule(
+    suspend fun createSchedule(
         token: String,
-        calendarId: String,
         event: EventCreate
-    ) {
-        try {
-            kakaoService.setSchedule(
-                token = token,
-                event = "{\"title\":\"test\", \"time\":{\"start_at\":\"2023-02-18T18:00:00Z\", \"end_at\":\"2023-02-18T20:00:00Z\", \"time_zone\": \"Asia/Seoul\", \"all_day\": false, \"lunar\": false}}"
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    ) = kakaoService.setSchedule(
+        token = "Bearer $token",
+        event = "{\"title\":\"${event.title}\", \"time\":{\"start_at\":\"${event.startAt}\", \"end_at\":\"${event.endAt}\", \"time_zone\": \"Asia/Seoul\", \"all_day\": ${event.isAllDay}, \"lunar\": false}}"
+//        event = "{\"title\":\"test\", \"time\":{\"start_at\":\"2023-04-18T18:00:00Z\", \"end_at\":\"2023-04-18T20:00:00Z\", \"time_zone\": \"Asia/Seoul\", \"all_day\": false, \"lunar\": false}}"
+    )
+    suspend fun createSchedule2(
+        token: String,
+        event: EventCreate
+    ) = kakaoService.setSchedule2(
+        token = "Bearer $token",
+        event = EventParam(event)
+    )
 
     /** 키워드로 장소 검색 **/
     suspend fun fetchPlaceListByKeyword(keyword: String) =

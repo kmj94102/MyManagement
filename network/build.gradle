@@ -20,6 +20,7 @@ android {
         buildConfigField "String", "BUS_AUTH_KEY", properties['bus_auth_key']
         buildConfigField "String", "SUBWAY_API_KEY", properties['subwy_api_key']
         buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
+        buildConfigField "String", "KAKAO_ADMIN_AUTHORIZATION", properties['kakao_admin_authorization']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
