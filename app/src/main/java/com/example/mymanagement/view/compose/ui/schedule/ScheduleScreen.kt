@@ -1,7 +1,9 @@
 package com.example.mymanagement.view.compose.ui.schedule
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -18,13 +20,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mymanagement.R
 import com.example.mymanagement.util.nonRippleClickable
+import com.example.mymanagement.util.textStyle12
 import com.example.mymanagement.util.textStyle24B
 import com.example.mymanagement.view.compose.ui.custom.CustomCalendar
 import com.example.mymanagement.view.compose.ui.custom.model.CalendarItem
 import com.example.mymanagement.view.compose.ui.schedule.bottom_sheet.YearMonthSelectBottomSheet
 import com.example.mymanagement.view.compose.ui.theme.Gray
 import com.example.mymanagement.view.compose.ui.theme.Green
+import com.example.mymanagement.view.compose.ui.theme.Red
 import com.example.mymanagement.view.compose.ui.theme.White
+import com.example.network.model.kakao.Schedule
+import com.example.network.util.convertToDateTime
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -104,7 +110,7 @@ fun ScheduleHeader(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
-                painter = painterResource(id = com.example.mymanagement.R.drawable.ic_arrow_bottom),
+                painter = painterResource(id = R.drawable.ic_arrow_bottom),
                 contentDescription = null,
                 tint = White,
                 modifier = Modifier.nonRippleClickable {
@@ -143,8 +149,10 @@ fun ScheduleBody(
             Text(
                 buildAnnotatedString {
                     append("${item.date.padStart(2, '0')} (${item.dayOfWeek}) ")
-                    withStyle(style = SpanStyle(color = Gray, fontSize = 16.sp)) {
-                        append(item.dateInfo)
+                    if (item.isHoliday) {
+                        withStyle(style = SpanStyle(color = Gray, fontSize = 16.sp)) {
+                            append(item.dateInfo)
+                        }
                     }
                 },
                 style = textStyle24B()
@@ -160,5 +168,41 @@ fun ScheduleBody(
                     }
             )
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(top = 10.dp, bottom = 50.dp)
+        ) {
+            item.scheduleList.forEach {
+                item {
+                    ScheduleCard(it)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ScheduleCard(schedule: Schedule) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Red, RoundedCornerShape(8.dp))
+    ) {
+        Text(
+            text = "${
+                convertToDateTime(
+                    schedule.startAt,
+                    "HH:mm"
+                )
+            } ~ ${convertToDateTime(schedule.endAt, "HH.mm")}",
+            style = textStyle12(),
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp)
+        )
+        Text(
+            text = schedule.title,
+            style = textStyle24B().copy(fontSize = 20.sp, color = Red),
+            modifier = Modifier.padding(top = 4.dp, start = 10.dp, bottom = 10.dp)
+        )
     }
 }

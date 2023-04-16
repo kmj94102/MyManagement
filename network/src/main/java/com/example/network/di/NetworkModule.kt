@@ -1,5 +1,6 @@
 package com.example.network.di
 
+import com.example.mymanagement.database.TokenDao
 import com.example.network.BuildConfig
 import com.example.network.service.*
 import com.kakao.sdk.user.UserApiClient
@@ -107,9 +108,10 @@ object NetworkModule {
     @Singleton
     fun provideKakaoClient(
         kakaoService: KakaoService,
-        userApiClient: UserApiClient
+        userApiClient: UserApiClient,
+        tokenDao: TokenDao
     ): KakaoClient =
-        KakaoClient(kakaoService, userApiClient)
+        KakaoClient(kakaoService, userApiClient, tokenDao)
 
     @Provides
     @Singleton

@@ -58,7 +58,7 @@ fun DateSelectBottomSheet(
         pageCount = 2,
         state = pagerState,
         userScrollEnabled = false,
-        modifier = Modifier.height(308.dp)
+//        modifier = Modifier.height(308.dp)
     ) {
         when (it) {
             0 -> {

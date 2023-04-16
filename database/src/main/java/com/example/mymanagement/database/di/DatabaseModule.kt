@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.mymanagement.database.FavoriteDao
 import com.example.mymanagement.database.MyManagementDatabase
 import com.example.mymanagement.database.SubwayDao
+import com.example.mymanagement.database.TokenDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,5 +37,11 @@ object DatabaseModule {
     fun provideFavoriteDao(
         database: MyManagementDatabase
     ): FavoriteDao = database.favoriteDao()
+
+    @Provides
+    @Singleton
+    fun provideTokenDao(
+        database: MyManagementDatabase
+    ): TokenDao = database.tokenDao()
 
 }

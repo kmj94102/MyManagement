@@ -7,6 +7,17 @@ import retrofit2.http.*
 
 interface KakaoService {
     /**
+     * 토큰 갱신
+     * **/
+    @FormUrlEncoded
+    @POST("https://kauth.kakao.com/oauth/token")
+    suspend fun fetchUpdateToken(
+        @Field("grant_type") grantType: String = "refresh_token",
+        @Field("client_id") clientId: String = BuildConfig.KAKAO_REST_API_KEY,
+        @Field("refresh_token") refreshToken: String
+    ): TokenResponse
+
+    /**
      * 사용자 캘린더 목록 가져오기
      * @param token ACCESS TOKEN
      * @param filter 목록을 가져올 캘린더 타입, 다음중 하나:
@@ -33,15 +44,24 @@ interface KakaoService {
     ): KakaoApiResult<HolidayItem>
 
     /**
+     * 달력 권한 체크
+     * **/
+    @GET("v2/user/scopes")
+    suspend fun fetchUserScopes(
+        @Header("Authorization") accessToken: String,
+        @Query("scopes") scopes: String
+    ): KakaoScopeResult
+
+    /**
      * 일정 리스트 조회
      * **/
     @GET("/v2/api/calendar/events")
-    suspend fun getSchedules(
+    suspend fun fetchSchedules(
         @Header("Authorization") token: String,
         @Query("calendar_id") id: String = "primary",
         @Query("from") from: String,
         @Query("to") to: String
-    )
+    ): KakaoApiResult<ScheduleResult>
 
     /**
      * 일정 생성

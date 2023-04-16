@@ -1,10 +1,13 @@
 package com.example.network.model.kakao
 
+import com.example.network.util.convertToDateTime
+import com.example.network.util.convertToRFC5545
 import com.google.gson.annotations.SerializedName
 
 data class EventParam(
     val event: EventCreate
 )
+
 /**
  * @param title 일정 제목(최대 50자) [필수]
  * @param startAt 일정 시작 시간 [필수]
@@ -27,3 +30,46 @@ data class EventCaretResult(
     @SerializedName("event_id")
     val eventId: String
 )
+
+object RepeatRrule {
+    const val NoRepeat = "NoRepeat"
+    const val Daily = "DAILY"
+    const val Weekly = "WEEKLY"
+    const val Monthly = "MONTHLY"
+    const val Yearly = "YEARLY"
+
+    fun createRrule(repeatCycle: String, until: String) =
+        if (repeatCycle == NoRepeat) {
+            ""
+        } else {
+            "FREQ=$repeatCycle;UNTIL=${convertToRFC5545("$until 23:59")}"
+        }
+
+    fun getRepeatState(rrule: String) =
+        when {
+            rrule.contains(Daily) -> Daily
+            rrule.contains(Weekly) -> Weekly
+            rrule.contains(Monthly) -> Monthly
+            rrule.contains(Yearly) -> Yearly
+            else -> NoRepeat
+        }
+
+    fun getUntilTile(rrule: String) = convertToDateTime(rrule.split("=").last())
+
+    fun rruleToUiString(rrule: String) =
+        when(getRepeatState(rrule)) {
+            Daily -> {
+                "${getUntilTile(rrule)}까지 매일 반복"
+            }
+            Weekly -> {
+                "${getUntilTile(rrule)}까지 매주 반복"
+            }
+            Monthly -> {
+                "${getUntilTile(rrule)}까지 매월 반복"
+            }
+            Yearly -> {
+                "${getUntilTile(rrule)}까지 매년 반복"
+            }
+            else -> "반복 안 함"
+        }
+}

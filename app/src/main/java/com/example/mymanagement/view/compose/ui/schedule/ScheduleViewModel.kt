@@ -1,6 +1,5 @@
 package com.example.mymanagement.view.compose.ui.schedule
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,6 @@ class ScheduleViewModel @Inject constructor(
     val selectCalendarItem
         get() = run { _calendarInfo.find { it.detailDate == _selectDate.value } }
 
-    private val token = kakaoRepository.fetchToken()
 
     init {
         setCalendarInfo()
@@ -46,7 +44,7 @@ class ScheduleViewModel @Inject constructor(
         _calendarInfo.addAll(
             fetchCalendarInfo(year = _year.value.toInt(), month = _month.value.toInt())
         )
-        fetchHoliday()
+        fetchSchedules()
     }
 
     private fun fetchHoliday() {
@@ -69,6 +67,33 @@ class ScheduleViewModel @Inject constructor(
                     }
                 }
             }
+            .launchIn(viewModelScope)
+    }
+
+    private fun fetchSchedules() {
+        kakaoRepository
+            .fetchSchedules(
+                year = _year.value,
+                month = _month.value
+            )
+            .onEach {
+                it.forEach { item ->
+                    val index = _calendarInfo.indexOfFirst { calendarItem ->
+                        calendarItem.detailDate == convertToDateTime(item.startAt)
+                    }
+
+                    if (index != -1) {
+                        _calendarInfo[index] = _calendarInfo[index].copy(
+                            isHoliday = item.isHoliday,
+                            dateInfo = item.title
+                        )
+                        if (item.group == 1) {
+                            _calendarInfo[index].scheduleList.add(item)
+                        }
+                    }
+                }
+            }
+            .catch { it.printStackTrace() }
             .launchIn(viewModelScope)
     }
 

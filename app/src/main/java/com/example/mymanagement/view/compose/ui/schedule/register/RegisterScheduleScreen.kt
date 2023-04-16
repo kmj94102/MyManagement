@@ -1,5 +1,6 @@
 package com.example.mymanagement.view.compose.ui.schedule.register
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,8 +25,11 @@ import com.example.mymanagement.view.compose.ui.custom.CommonSelectBox
 import com.example.mymanagement.view.compose.ui.custom.CommonTextField
 import com.example.mymanagement.view.compose.ui.navigation.NavScreen
 import com.example.mymanagement.view.compose.ui.schedule.bottom_sheet.DateSelectBottomSheet
+import com.example.mymanagement.view.compose.ui.schedule.bottom_sheet.RepeatSettingBottomSheet
 import com.example.mymanagement.view.compose.ui.theme.Green
 import com.example.mymanagement.view.compose.ui.theme.White
+import com.example.mymanagement.view.compose.ui.theme.Yellow
+import com.example.network.model.kakao.RepeatRrule
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -35,9 +39,12 @@ fun RegisterScheduleScreen(
     onBackClick: () -> Unit,
     viewModel: RegisterScheduleViewModel = hiltViewModel()
 ) {
+    val sheetIndex = remember {
+        mutableStateOf(0)
+    }
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = false
+        skipHalfExpanded = true
     )
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -56,21 +63,40 @@ fun RegisterScheduleScreen(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            DateSelectBottomSheet(
-                date = if (isStartAt) viewModel.event.value.startAt else viewModel.event.value.endAt,
-                pagerState = pagerState,
-                onDismiss = {
-                    scope.launch {
-                        sheetState.hide()
-                    }
-                },
-                onSelect = { date ->
-                    viewModel.contentUpdate(
-                        type = if (isStartAt) RegisterScheduleViewModel.StartAt else RegisterScheduleViewModel.EndAt,
-                        value = date
+            when (sheetIndex.value) {
+                1 -> {
+                    DateSelectBottomSheet(
+                        date = if (isStartAt) viewModel.event.value.startAt else viewModel.event.value.endAt,
+                        pagerState = pagerState,
+                        onDismiss = {
+                            scope.launch {
+                                sheetIndex.value = 0
+                                sheetState.hide()
+                            }
+                        },
+                        onSelect = { date ->
+                            viewModel.contentUpdate(
+                                type = if (isStartAt) RegisterScheduleViewModel.StartAt else RegisterScheduleViewModel.EndAt,
+                                value = date
+                            )
+                        }
                     )
                 }
-            )
+                2 -> {
+                    RepeatSettingBottomSheet(
+                        initValue = viewModel.event.value.rrule,
+                        onDismiss = {
+                            scope.launch {
+                                sheetIndex.value = 0
+                                sheetState.hide()
+                            }
+                        },
+                        onSelect = {
+                            viewModel.contentUpdate(RegisterScheduleViewModel.Repeat, it)
+                        }
+                    )
+                }
+            }
         },
         sheetState = sheetState,
         sheetBackgroundColor = White,
@@ -90,7 +116,14 @@ fun RegisterScheduleScreen(
                 onSelectDate = {
                     isStartAt = it
                     scope.launch {
+                        sheetIndex.value = 1
                         pagerState.scrollToPage(0)
+                        sheetState.show()
+                    }
+                },
+                onSelectRepeat = {
+                    scope.launch {
+                        sheetIndex.value = 2
                         sheetState.show()
                     }
                 }
@@ -118,6 +151,7 @@ fun RegisterScheduleScreen(
 fun RegisterScheduleBody(
     viewModel: RegisterScheduleViewModel,
     onSelectDate: (Boolean) -> Unit,
+    onSelectRepeat: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val event = viewModel.event.value
@@ -162,7 +196,12 @@ fun RegisterScheduleBody(
         CommonCheckBox(
             text = "하루 종일",
             modifier = Modifier.padding(top = 5.dp, bottom = 15.dp, start = 15.dp),
-            onCheckedChange = {}
+            onCheckedChange = {
+                viewModel.contentUpdate(
+                    type = RegisterScheduleViewModel.IsAllDay,
+                    value = if (it) "true" else "false"
+                )
+            }
         )
 
         Text(
@@ -175,12 +214,9 @@ fun RegisterScheduleBody(
                 .height(8.dp)
                 .padding(horizontal = 20.dp)
         )
-        CommonTextField(
-            value = "반복 안 함",
-            isReadOnly = true,
-            onValueChange = {
-
-            },
+        CommonSelectBox(
+            text = RepeatRrule.rruleToUiString(viewModel.event.value.rrule),
+            onClick = onSelectRepeat,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)

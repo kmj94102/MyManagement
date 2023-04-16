@@ -29,8 +29,8 @@ fun HomeScreen(
     }
 
     LaunchedEffect(loginState) {
-        Log.e("+++++", "$loginState")
-        if (loginState.isEmpty()) {
+        Log.e("HomeScreen", "token : $loginState")
+        if (loginState == null || loginState.isEmpty()) {
             goToLogin()
         }
     }

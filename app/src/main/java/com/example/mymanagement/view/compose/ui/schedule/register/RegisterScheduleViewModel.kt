@@ -22,7 +22,7 @@ class RegisterScheduleViewModel @Inject constructor(
 
     private val date = savedStateHandle.get<String>(NavScreen.RegisterSchedule.Date) ?: "2023.01.01"
     private val _event = mutableStateOf(
-        EventCreate(title = "", startAt = "$date 08:00", endAt = "$date 10:00")
+        EventCreate(title = "", startAt = "$date 08:00", endAt = "$date 10:00", rrule = "")
     )
     val event: State<EventCreate> = _event
 
@@ -43,8 +43,8 @@ class RegisterScheduleViewModel @Inject constructor(
             IsAllDay -> {
                 _event.value.copy(isAllDay = value == "true")
             }
-            Replay -> {
-                _event.value.copy()
+            Repeat -> {
+                _event.value.copy(rrule = value)
             }
             Title -> {
                 _event.value.copy(title = value)
@@ -58,8 +58,8 @@ class RegisterScheduleViewModel @Inject constructor(
     fun createEvent() = viewModelScope.launch {
         kakaoRepository.createEvent(
             eventCreate = _event.value.copy(
-                startAt = convertToRFC5545(_event.value.startAt),
-                endAt = convertToRFC5545(_event.value.endAt)
+                startAt = convertToRFC5545(_event.value.startAt, _event.value.isAllDay),
+                endAt = convertToRFC5545(_event.value.endAt, _event.value.isAllDay)
             ),
             onSuccess = {
                 _status.value = Status.Success
@@ -80,7 +80,7 @@ class RegisterScheduleViewModel @Inject constructor(
         const val StartAt = "startAt"
         const val EndAt = "endAt"
         const val IsAllDay = "isAllDay"
-        const val Replay = "replay"
+        const val Repeat = "repeat"
         const val Title = "title"
         const val Description = "description"
     }

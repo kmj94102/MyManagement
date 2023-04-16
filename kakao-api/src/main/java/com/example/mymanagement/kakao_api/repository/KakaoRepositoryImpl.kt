@@ -1,7 +1,6 @@
 package com.example.mymanagement.kakao_api.repository
 
 import android.content.Context
-import com.example.mymanagement.OnLoginState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

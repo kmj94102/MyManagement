@@ -121,30 +121,23 @@ fun DateCard(
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.padding(top = 2.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(5.dp)
-                    .clip(CircleShape)
-                    .background(Orange)
-            )
-            Box(
-                modifier = Modifier
-                    .size(5.dp)
-                    .clip(CircleShape)
-                    .background(Orange)
-            )
-            Box(
-                modifier = Modifier
-                    .size(5.dp)
-                    .clip(CircleShape)
-                    .background(Orange)
-            )
-            Icon(
-                painter = painterResource(id = com.example.mymanagement.R.drawable.ic_plus_small),
-                contentDescription = null,
-                tint = White,
-                modifier = Modifier.size(5.dp)
-            )
+            val maxItemCount = minOf(calendarItem.scheduleList.size, 3)
+            for (i in 0 until maxItemCount) {
+                Box(
+                    modifier = Modifier
+                        .size(5.dp)
+                        .clip(CircleShape)
+                        .background(Orange)
+                )
+            }
+            if (calendarItem.scheduleList.size > 3) {
+                Icon(
+                    painter = painterResource(id = com.example.mymanagement.R.drawable.ic_plus_small),
+                    contentDescription = null,
+                    tint = White,
+                    modifier = Modifier.size(5.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(5.dp))
     }

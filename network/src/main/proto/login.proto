@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option java_package ="com.example.mymanagement";
-option java_multiple_files = true;
-
-message OnLoginState {
-  string kakaoToken = 1;
-  string calendarId = 2;
-}

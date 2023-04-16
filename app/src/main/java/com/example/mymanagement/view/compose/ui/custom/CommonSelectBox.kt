@@ -45,7 +45,7 @@ fun CommonSelectBox(
             }
             .focusTarget()
             .nonRippleClickable {
-                    focusRequester.requestFocus()
+                focusRequester.requestFocus()
                 onClick()
             }
     ) {

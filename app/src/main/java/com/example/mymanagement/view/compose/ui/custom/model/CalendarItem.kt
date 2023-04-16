@@ -1,5 +1,6 @@
 package com.example.mymanagement.view.compose.ui.custom.model
 
+import com.example.network.model.kakao.Schedule
 import java.util.*
 
 /**
@@ -17,7 +18,7 @@ data class CalendarItem(
     val dateInfo: String = "",
     val dayOfWeek: String = "",
     val detailDate: String = "",
-    val scheduleList: List<String> = listOf(),
+    val scheduleList: MutableList<Schedule> = mutableListOf(),
 )
 
 /** 달력 정보 생성 **/

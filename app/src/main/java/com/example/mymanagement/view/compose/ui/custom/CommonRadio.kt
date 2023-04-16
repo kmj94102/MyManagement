@@ -1,11 +1,17 @@
 package com.example.mymanagement.view.compose.ui.custom
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.*
@@ -13,6 +19,8 @@ import com.example.mymanagement.util.nonRippleClickable
 import com.example.mymanagement.util.textStyle16
 import com.example.mymanagement.view.compose.ui.theme.Black
 import com.example.mymanagement.view.compose.ui.theme.Gray
+import com.example.mymanagement.view.compose.ui.theme.Green
+import com.example.mymanagement.view.compose.ui.theme.White
 
 @Composable
 fun CommonRadio(
@@ -32,28 +40,24 @@ fun CommonRadio(
             }
         }
     ) {
-        val composition by rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(com.example.mymanagement.R.raw.radio)
+        val borderColor = animateColorAsState(
+            targetValue = if (check) White else Gray,
+            animationSpec = tween(durationMillis = 250)
         )
-        val animatable = rememberLottieAnimatable()
+        val fillColor = animateColorAsState(
+            targetValue = if (check) Green else White,
+            animationSpec = tween(durationMillis = 500)
+        )
 
-        LottieAnimation(
-            composition = composition,
-            progress = { animatable.progress },
-            modifier = Modifier.size(30.dp)
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .border(1.dp, borderColor.value, CircleShape)
+                .background(fillColor.value)
         )
+        Spacer(modifier = Modifier.padding(start = 8.dp))
         Text(text = text, style = textStyle.copy(color = if (isEnable) Black else Gray))
 
-        LaunchedEffect(check) {
-            if (check) {
-                animatable.animate(
-                    composition,
-                    clipSpec = LottieClipSpec.Progress(0.3f, 0.95f),
-                    speed = 2.5f
-                )
-            } else {
-                animatable.snapTo(composition, 0f)
-            }
-        }
     }
 }

@@ -1,21 +1,21 @@
 package com.example.network.service
 
 import android.content.Context
-import android.util.Log
+import com.example.mymanagement.database.TokenDao
+import com.example.mymanagement.database.entity.TokenEntity
 import com.example.network.model.kakao.EventCreate
-import com.example.network.model.kakao.EventParam
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.kakao.sdk.user.model.User
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class KakaoClient @Inject constructor(
     private val kakaoService: KakaoService,
-    private val userApiClient: UserApiClient
+    private val userApiClient: UserApiClient,
+    private val dao: TokenDao
 ) {
 
     /**
@@ -63,19 +63,6 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    private suspend fun UserApiClient.Companion.loginWithNewScopes(context: Context): Boolean {
-        val scope = mutableListOf("talk_calendar")
-        return suspendCoroutine { continuation ->
-            instance.loginWithNewScopes(context, scope) { _, error ->
-                error?.printStackTrace()
-                continuation.resume(error == null)
-            }
-        }
-    }
-
-    suspend fun calendarPermission(context: Context) =
-        UserApiClient.loginWithNewScopes(context)
-
     /**
      * 카카오 로그아웃
      * **/
@@ -87,59 +74,124 @@ class KakaoClient @Inject constructor(
         }
     }
 
-    fun getUserInfo2(
-        context: Context,
-        callback: (User?, Throwable?) -> Unit,
-    ) {
-        userApiClient.me { user, error ->
-            val scope = mutableListOf("talk_calendar")
-            UserApiClient.instance.loginWithNewScopes(context, scope) { token, e ->
-                if (e != null) {
-                    Log.e("+++++", "error : ${e.cause}")
-                }
-                Log.e("+++++", "sucess : ${token?.scopes}")
+    /**
+     * 토큰 갱신하여 받아오기
+     * **/
+    suspend fun fetchUpdateToken(
+        refreshToken: String
+    ) = kakaoService.fetchUpdateToken(
+        refreshToken = refreshToken
+    )
+
+    /**
+     * 토큰 등록
+     * **/
+    suspend fun insetToken(
+        tokenEntity: TokenEntity
+    ) = dao.insertToken(tokenEntity)
+
+    /**
+     * 토큰 업데이트
+     * **/
+    suspend fun updateToken(
+        tokenEntity: TokenEntity
+    ) = dao.updateToken(tokenEntity)
+
+    /**
+     * 토큰 제거
+     * **/
+    suspend fun deleteToken() = dao.deleteAll()
+
+    /**
+     * 토큰 조회
+     * **/
+    suspend fun fetchToken() = dao.fetchToken()
+
+    /**
+     * AccessToken 조회
+     * **/
+    suspend fun fetchAccessToken() = dao.fetchAccessToken()
+
+    /**
+     * AccessToken 조회(flow)
+     * **/
+    fun fetchAccessTokenFlow() = dao.fetchAccessTokenFlow()
+
+    /**
+     * 달력 권한 체크
+     * **/
+    suspend fun checkCalendarPermission(
+        token: String
+    ) = kakaoService.fetchUserScopes(
+        accessToken = "Bearer $token",
+        scopes = "[\"talk_calendar\"]"
+    ).scopes.map { it.id == "talk_calendar" }.firstOrNull()
+
+    /** 달력 권한 요청 **/
+    private suspend fun UserApiClient.Companion.loginWithNewScopes(context: Context): Boolean {
+        val scope = mutableListOf("talk_calendar")
+        return suspendCoroutine { continuation ->
+            instance.loginWithNewScopes(context, scope) { _, error ->
+                error?.printStackTrace()
+                continuation.resume(error == null)
             }
-            callback(user, error)
         }
     }
 
+    /** 달력 권한 요청 **/
+    suspend fun requestCalendarPermission(context: Context) =
+        UserApiClient.loginWithNewScopes(context)
+
+
+    /**
+     * 달력 리스트 조회
+     * **/
     suspend fun getCalendarList(token: String) =
         kakaoService.getCalenderList("Bearer $token")
 
+    /**
+     * 공휴일 조회
+     * **/
     suspend fun fetchHolidays(
         from: String,
         to: String
-    ) = kakaoService.getHolidays(
-        from = from,
-        to = to
-    ).events
-
-    suspend fun getSchedules(token: String) {
-        try {
-            kakaoService.getSchedules(
-                token = token,
-                from = "2023-02-01T00:00:00Z",
-                to = "2023-02-31T00:00:00Z"
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    ) = try {
+        kakaoService.getHolidays(
+            from = from,
+            to = to
+        ).events
+    } catch (e: Exception) {
+        e.printStackTrace()
+        emptyList()
     }
 
+    /**
+     * 일정 조회
+     * **/
+    suspend fun fetchSchedules(
+        token: String,
+        from: String,
+        to: String
+    ) = try {
+        kakaoService.fetchSchedules(
+            token = "Bearer $token",
+            from = from,
+            to = to
+        ).events
+    } catch (e: Exception) {
+        e.printStackTrace()
+        emptyList()
+    }
+
+    /**
+     * 일정 생성
+     * **/
     suspend fun createSchedule(
         token: String,
         event: EventCreate
     ) = kakaoService.setSchedule(
         token = "Bearer $token",
-        event = "{\"title\":\"${event.title}\", \"time\":{\"start_at\":\"${event.startAt}\", \"end_at\":\"${event.endAt}\", \"time_zone\": \"Asia/Seoul\", \"all_day\": ${event.isAllDay}, \"lunar\": false}}"
-//        event = "{\"title\":\"test\", \"time\":{\"start_at\":\"2023-04-18T18:00:00Z\", \"end_at\":\"2023-04-18T20:00:00Z\", \"time_zone\": \"Asia/Seoul\", \"all_day\": false, \"lunar\": false}}"
-    )
-    suspend fun createSchedule2(
-        token: String,
-        event: EventCreate
-    ) = kakaoService.setSchedule2(
-        token = "Bearer $token",
-        event = EventParam(event)
+        event = "{\"title\":\"${event.title}\", \"rrlue\":\"${event.rrule}\", \"description\":\"${event.description}\",\"title\":\"${event.title}\", \"time\":{\"start_at\":\"${event.startAt}\", \"end_at\":\"${event.endAt}\", \"time_zone\": \"Asia/Seoul\", \"all_day\": ${event.isAllDay}, \"lunar\": false}}"
     )
 
     /** 키워드로 장소 검색 **/
